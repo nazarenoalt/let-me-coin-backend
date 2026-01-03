@@ -12,17 +12,18 @@ export class UsersService {
   ) {}
 
   async create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+    const newUser = this.userRepository.create(createUserDto);
+    return await this.userRepository.save(newUser);
   }
 
   async findAll() {
-    return `This action returns all users`;
+    return await this.userRepository.find();
   }
 
   async findOne(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
     if (!user) throw new NotFoundException(`User with id ${id} not found.`);
-    return;
+    return user;
   }
 
   async update(id: number, updateUserDto: UpdateUserDto) {
