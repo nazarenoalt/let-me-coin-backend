@@ -31,9 +31,8 @@ export class UsersService {
     }
   }
 
-  async findAll({ offset = 1, limit = 50 }: PaginationUserDto) {
+  async findAll({ offset = 0, limit = 50 }: PaginationUserDto) {
     return await this.userRepository.find({
-      relations: ['user'],
       skip: offset,
       take: limit,
     });
@@ -45,8 +44,12 @@ export class UsersService {
     return user;
   }
 
-  async update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const result = await this.userRepository.update(id, updateUserDto);
+    if (result.affected === 0) {
+      throw new NotFoundException('User not found.');
+    }
+    return result;
   }
 
   async remove(id: string) {

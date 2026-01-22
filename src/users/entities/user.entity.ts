@@ -18,10 +18,10 @@ export class User {
   lastName: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })
-  email;
+  email: string;
 
   @Column({ type: 'varchar', length: 100 })
-  password;
+  password: string;
 
   @Column({ type: 'jsonb', nullable: true })
   preferences: Record<string, any>;
