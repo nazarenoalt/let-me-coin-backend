@@ -2,6 +2,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -28,6 +29,7 @@ export class UsersService {
       if (error.code == '23505') {
         throw new BadRequestException(error.detail);
       }
+      this.exceptionHandler(error);
     }
   }
 
@@ -45,17 +47,43 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const result = await this.userRepository.update(id, updateUserDto);
-    if (result.affected === 0) {
-      throw new NotFoundException('User not found.');
+    try {
+      await this.userRepository.update(id, updateUserDto);
+      const updatedUser = await this.userRepository.findOne({ where: { id } });
+      if (!updatedUser)
+        throw new NotFoundException(
+          `User with id ${id} not found after update.`,
+        );
+    } catch (error) {
+      this.exceptionHandler(error);
     }
-    return result;
   }
+
+  // TODO
+  async removeMany() {}
+
+  // TODO
+  async updateMany() {}
 
   async remove(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user)
-      throw new NotFoundException(`The user with id ${id} was not found`);
-    return await this.userRepository.remove(user);
+    if (!user) throw new NotFoundException('User not found');
+
+    try {
+      return await this.userRepository.remove(user);
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
+  }
+
+  exceptionHandler(error) {
+    this.logger.error(error);
+    if (error.code === '23505') {
+      throw new BadRequestException('Duplicate entry detected.');
+    }
+
+    throw new InternalServerErrorException(
+      'An unexpected error ocurred on the server',
+    );
   }
 }
