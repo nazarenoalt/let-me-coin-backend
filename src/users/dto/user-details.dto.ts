@@ -1,4 +1,4 @@
-import { IsBoolean, IsEnum } from 'class-validator';
+import { IsBoolean, IsEnum, IsOptional } from 'class-validator';
 
 export enum USERTYPE {
   Standard = 'standard',
@@ -7,8 +7,10 @@ export enum USERTYPE {
 
 export class UserDetailsDto {
   @IsBoolean()
+  @IsOptional()
   enabled: boolean;
 
   @IsEnum(USERTYPE)
+  @IsOptional()
   type: USERTYPE;
 }

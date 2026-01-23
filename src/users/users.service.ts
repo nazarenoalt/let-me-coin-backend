@@ -10,6 +10,7 @@ import { CreateUserDto, UpdateUserDto, PaginationUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { In, Repository } from 'typeorm';
+import { cleanObject } from 'src/common/helpers/object.helper';
 
 @Injectable()
 export class UsersService {
@@ -48,26 +49,40 @@ export class UsersService {
 
   async update(id: string, updateUserDto: UpdateUserDto) {
     try {
-      await this.userRepository.update(id, updateUserDto);
-      const updatedUser = await this.userRepository.findOne({ where: { id } });
-      if (!updatedUser)
-        throw new NotFoundException(
-          `User with id ${id} not found after update.`,
-        );
+      return await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          details: () => 'details || :newDetails::jsonb',
+        })
+        .setParameter(
+          'newDetails',
+          JSON.stringify(cleanObject(updateUserDto.details)),
+        )
+        .where('id = :id', { id })
+        .execute();
     } catch (error) {
       this.exceptionHandler(error);
     }
   }
 
-  async updateMany(ids: string[], updateUserDto: UpdateUserDto) {
+  async updateMany(ids: string[], data: UpdateUserDto) {
     try {
-      return await this.userRepository.update({ id: In(ids) }, updateUserDto);
+      return await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          details: () => 'details || :newDetails::jsonb',
+        })
+        .setParameter('newDetails', JSON.stringify(cleanObject(data.details)))
+        .where('id IN (:...ids)', { ids })
+        .execute();
     } catch (error) {
       this.exceptionHandler(error);
     }
   }
 
-  // TODO
+  // TODOe
   async removeMany() {}
 
   async remove(id: string) {
