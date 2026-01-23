@@ -9,7 +9,7 @@ import {
 import { CreateUserDto, UpdateUserDto, PaginationUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 @Injectable()
 export class UsersService {
@@ -59,11 +59,16 @@ export class UsersService {
     }
   }
 
-  // TODO
-  async removeMany() {}
+  async updateMany(ids: string[], updateUserDto: UpdateUserDto) {
+    try {
+      return await this.userRepository.update({ id: In(ids) }, updateUserDto);
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
+  }
 
   // TODO
-  async updateMany() {}
+  async removeMany() {}
 
   async remove(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });

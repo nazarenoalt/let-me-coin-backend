@@ -13,6 +13,7 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationUserDto } from './dto';
+import { BulkUpdateUserDto } from './dto/bulk-update-user.dto';
 
 @Controller('users')
 export class UsersController {
@@ -31,6 +32,11 @@ export class UsersController {
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Patch('bulk')
+  updateMany(@Body() dto: BulkUpdateUserDto) {
+    return this.usersService.updateMany(dto.ids, dto.data);
   }
 
   @Patch(':id')

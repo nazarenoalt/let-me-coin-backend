@@ -1,4 +1,5 @@
 import {
+  BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
@@ -23,6 +24,9 @@ export class User {
   @Column({ type: 'varchar', length: 100 })
   password: string;
 
+  @Column({ type: 'jsonb', nullable: false })
+  details: IuserDetails;
+
   @Column({ type: 'jsonb', nullable: true })
   preferences: Record<string, any>;
 
@@ -31,4 +35,24 @@ export class User {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @BeforeInsert()
+  configureUserDetails() {
+    if (!this.details) {
+      this.details = {
+        enabled: true,
+        type: USERTYPE.Standard,
+      };
+    }
+  }
+}
+
+export interface IuserDetails {
+  enabled: boolean;
+  type: USERTYPE;
+}
+
+export enum USERTYPE {
+  Standard = 'standard',
+  Experimental = 'experimental',
 }
