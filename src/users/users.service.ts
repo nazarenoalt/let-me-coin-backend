@@ -96,10 +96,14 @@ export class UsersService {
     }
   }
 
+  // TODO: Create a global handler
   exceptionHandler(error) {
     this.logger.error(error);
     if (error.code === '23505') {
       throw new BadRequestException('Duplicate entry detected.');
+    }
+    if (error.code === '02000') {
+      throw new NotFoundException('User not found.');
     }
 
     throw new InternalServerErrorException(
