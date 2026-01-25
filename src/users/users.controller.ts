@@ -13,7 +13,8 @@ import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationUserDto } from './dto';
-import { BulkUpdateUserDto } from './dto/bulk-update-user.dto';
+import { BulkUpdateUserDto } from './dto/bulk-update-users.dto';
+import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -47,8 +48,16 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @Delete('bulk')
+  removeMany(
+    @Body()
+    dto: BulkRemoveUsersDto,
+  ) {
+    return this.usersService.removeMany(dto);
+  }
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

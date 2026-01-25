@@ -9,8 +9,9 @@ import {
 import { CreateUserDto, UpdateUserDto, PaginationUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { cleanObject } from 'src/common/helpers/object.helper';
+import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -82,8 +83,18 @@ export class UsersService {
     }
   }
 
-  // TODOe
-  async removeMany() {}
+  async removeMany({ ids }: BulkRemoveUsersDto) {
+    try {
+      return this.userRepository
+        .createQueryBuilder()
+        .delete()
+        .from(User)
+        .where('id IN (:...ids)', { ids })
+        .execute();
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
+  }
 
   async remove(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
