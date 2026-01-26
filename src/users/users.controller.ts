@@ -26,7 +26,7 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query() pagination: PaginationUserDto) {
+  findAll(@Query() pagination: Partial<PaginationUserDto>) {
     return this.usersService.findAll(pagination);
   }
 

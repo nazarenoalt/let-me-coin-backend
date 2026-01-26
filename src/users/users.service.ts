@@ -35,7 +35,7 @@ export class UsersService {
     }
   }
 
-  async findAll({ offset = 0, limit = 50 }: PaginationUserDto) {
+  async findAll({ offset = 0, limit = 50 }: Partial<PaginationUserDto>) {
     return await this.userRepository.find({
       skip: offset,
       take: limit,
