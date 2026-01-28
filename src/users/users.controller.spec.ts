@@ -6,10 +6,25 @@ import { createMockUser } from 'src/common/test-data/user.factory';
 describe('UsersController', () => {
   let controller: UsersController;
   let service: UsersService;
+
+  const mockUserService = {
+    findAll: jest.fn(),
+    findOne: jest.fn(),
+    update: jest.fn(),
+    updateMany: jest.fn(),
+    remove: jest.fn(),
+    removeMany: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
-      providers: [UsersService],
+      providers: [
+        {
+          provide: UsersService,
+          useValue: mockUserService,
+        },
+      ],
     }).compile();
 
     service = module.get(UsersService);

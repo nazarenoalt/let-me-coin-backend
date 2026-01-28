@@ -83,6 +83,17 @@ export class UsersService {
     }
   }
 
+  async remove(id: string) {
+    const user = await this.userRepository.findOne({ where: { id } });
+    if (!user) throw new NotFoundException('User not found');
+
+    try {
+      return await this.userRepository.remove(user);
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
+  }
+
   async removeMany({ ids }: BulkRemoveUsersDto) {
     try {
       return this.userRepository
@@ -91,17 +102,6 @@ export class UsersService {
         .from(User)
         .where('id IN (:...ids)', { ids })
         .execute();
-    } catch (error) {
-      this.exceptionHandler(error);
-    }
-  }
-
-  async remove(id: string) {
-    const user = await this.userRepository.findOne({ where: { id } });
-    if (!user) throw new NotFoundException('User not found');
-
-    try {
-      return await this.userRepository.remove(user);
     } catch (error) {
       this.exceptionHandler(error);
     }

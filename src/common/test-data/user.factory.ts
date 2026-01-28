@@ -1,8 +1,7 @@
 import { User, USERTYPE } from 'src/users/entities/user.entity';
-import { v4 as uuidv4 } from 'uuid';
 
 export const createMockUser = (overrides?: Partial<User>): User => ({
-  id: uuidv4(),
+  id: `${Math.random() * 8}-0000-0000-0000-000000000000`,
   firstName: 'Test',
   lastName: 'Test',
   email: `test${Math.random() * 1000}@test.com`,
