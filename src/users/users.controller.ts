@@ -8,12 +8,13 @@ import {
   Delete,
   ParseUUIDPipe,
   Query,
-  ParseIntPipe,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { PaginationUserDto } from './dto';
+import { BulkUpdateUserDto } from './dto/bulk-update-users.dto';
+import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
 
 @Controller('users')
 export class UsersController {
@@ -25,13 +26,18 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query() pagination: PaginationUserDto) {
+  findAll(@Query() pagination: Partial<PaginationUserDto>) {
     return this.usersService.findAll(pagination);
   }
 
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.findOne(id);
+  }
+
+  @Patch('bulk')
+  updateMany(@Body() dto: BulkUpdateUserDto) {
+    return this.usersService.updateMany(dto.ids, dto.data);
   }
 
   @Patch(':id')
@@ -42,8 +48,16 @@ export class UsersController {
     return this.usersService.update(id, updateUserDto);
   }
 
+  @Delete('bulk')
+  removeMany(
+    @Body()
+    dto: BulkRemoveUsersDto,
+  ) {
+    return this.usersService.removeMany(dto);
+  }
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

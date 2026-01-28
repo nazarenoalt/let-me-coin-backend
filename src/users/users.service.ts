@@ -2,6 +2,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -9,6 +10,8 @@ import { CreateUserDto, UpdateUserDto, PaginationUserDto } from './dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
+import { cleanObject } from 'src/common/helpers/object.helper';
+import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
 
 @Injectable()
 export class UsersService {
@@ -28,10 +31,11 @@ export class UsersService {
       if (error.code == '23505') {
         throw new BadRequestException(error.detail);
       }
+      this.exceptionHandler(error);
     }
   }
 
-  async findAll({ offset = 0, limit = 50 }: PaginationUserDto) {
+  async findAll({ offset = 0, limit = 50 }: Partial<PaginationUserDto>) {
     return await this.userRepository.find({
       skip: offset,
       take: limit,
@@ -45,17 +49,76 @@ export class UsersService {
   }
 
   async update(id: string, updateUserDto: UpdateUserDto) {
-    const result = await this.userRepository.update(id, updateUserDto);
-    if (result.affected === 0) {
-      throw new NotFoundException('User not found.');
+    try {
+      return await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          details: () => 'details || :newDetails::jsonb',
+        })
+        .setParameter(
+          'newDetails',
+          JSON.stringify(cleanObject(updateUserDto.details)),
+        )
+        .where('id = :id', { id })
+        .execute();
+    } catch (error) {
+      this.exceptionHandler(error);
     }
-    return result;
+  }
+
+  async updateMany(ids: string[], data: UpdateUserDto) {
+    try {
+      return await this.userRepository
+        .createQueryBuilder()
+        .update(User)
+        .set({
+          details: () => 'details || :newDetails::jsonb',
+        })
+        .setParameter('newDetails', JSON.stringify(cleanObject(data.details)))
+        .where('id IN (:...ids)', { ids })
+        .execute();
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
   }
 
   async remove(id: string) {
     const user = await this.userRepository.findOne({ where: { id } });
-    if (!user)
-      throw new NotFoundException(`The user with id ${id} was not found`);
-    return await this.userRepository.remove(user);
+    if (!user) throw new NotFoundException('User not found');
+
+    try {
+      return await this.userRepository.remove(user);
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
+  }
+
+  async removeMany({ ids }: BulkRemoveUsersDto) {
+    try {
+      return this.userRepository
+        .createQueryBuilder()
+        .delete()
+        .from(User)
+        .where('id IN (:...ids)', { ids })
+        .execute();
+    } catch (error) {
+      this.exceptionHandler(error);
+    }
+  }
+
+  // TODO: Create a global handler
+  exceptionHandler(error) {
+    this.logger.error(error);
+    if (error.code === '23505') {
+      throw new BadRequestException('Duplicate entry detected.');
+    }
+    if (error.code === '02000') {
+      throw new NotFoundException('User not found.');
+    }
+
+    throw new InternalServerErrorException(
+      'An unexpected error ocurred on the server',
+    );
   }
 }
