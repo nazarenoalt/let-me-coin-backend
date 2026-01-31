@@ -8,8 +8,8 @@ import {
   Delete,
 } from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { CreateDashboardDto } from '../../domain/dashboard/dto/create-dashboard.dto';
-import { UpdateDashboardDto } from '../../domain/dashboard/dto/update-dashboard.dto';
+import { CreateDashboardDto } from '@domain/dashboard/dto/create-dashboard.dto';
+import { UpdateDashboardDto } from '@domain/dashboard/dto/update-dashboard.dto';
 
 @Controller('dashboard')
 export class DashboardController {

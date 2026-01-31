@@ -6,9 +6,9 @@ import {
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { User } from '../../../domain/users/user.entity';
-import { CreateUserDto, UpdateUserDto } from '../../../domain/users/dto';
-import { BulkRemoveUsersDto } from '../../../domain/users/dto/bulk-remove-users.dto';
+import { User } from '@domain/users/user.entity';
+import { CreateUserDto, UpdateUserDto } from '@domain/users/dto';
+import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
 
 describe('UsersService', () => {
   let service: UsersService;
