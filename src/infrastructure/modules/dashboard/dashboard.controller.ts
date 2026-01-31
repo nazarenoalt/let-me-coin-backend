@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { DashboardService } from '@applications/sdashboards/dashboard.service';
+import { DashboardService } from '@applications/dashboards/dashboard.service';
 import { CreateDashboardDto } from '@domain/dashboard/dto/create-dashboard.dto';
 import { UpdateDashboardDto } from '@domain/dashboard/dto/update-dashboard.dto';
 

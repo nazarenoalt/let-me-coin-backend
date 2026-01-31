@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersController } from '../users.controller';
-import { UsersService } from '../@applications/susers/users.service';
+import { UsersService } from '../@applications/users/users.service';
 import { createMockUser } from '@infrastructure/modules/common/test-data/user.factory';
 
 describe('UsersController', () => {

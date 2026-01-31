@@ -4,9 +4,8 @@
   "compilerOptions": {
   "paths": {
       "@domain/*": ["src/domain/*"],
-      "@applications//*":["src/application/*"],
+      "@applications/*":["src/applications/*"],
       "@infrastructure/*":["src/infrastructure/*"],
-      "@modules/*":["src/modules/*"],
     }
   }
 }

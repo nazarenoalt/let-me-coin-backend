@@ -9,7 +9,7 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import { UsersService } from '@applications/susers/users.service';
+import { UsersService } from '@applications/users/users.service';
 import { CreateUserDto } from '@domain/users/dto/create-user.dto';
 import { UpdateUserDto } from '@domain/users/dto/update-user.dto';
 import { PaginationUserDto } from '@domain/users/dto';
