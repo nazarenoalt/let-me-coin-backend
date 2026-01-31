@@ -11,6 +11,7 @@ import { TransactionsModule } from './transactions/transactions.module';
 import { DashboardModule } from './dashboard/dashboard.module';
 import { CommonModule } from './common/common.module';
 import { DatabaseModule } from './database/database.module';
+import { AccountsModule } from './accounts/accounts.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { DatabaseModule } from './database/database.module';
     DashboardModule,
     CommonModule,
     DatabaseModule,
+    AccountsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

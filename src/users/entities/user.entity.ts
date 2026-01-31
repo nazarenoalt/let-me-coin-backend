@@ -1,8 +1,10 @@
+import { Account } from 'src/accounts/entities/account.entity';
 import {
   BeforeInsert,
   Column,
   CreateDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -29,6 +31,9 @@ export class User {
 
   @Column({ type: 'jsonb', nullable: true })
   preferences: Record<string, any>;
+
+  @OneToMany(() => Account, (accounts) => accounts.user)
+  accounts: Account[];
 
   @CreateDateColumn()
   createdAt: Date;
