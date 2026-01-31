@@ -1,4 +1,4 @@
-import { User, USERTYPE } from 'src/users/entities/user.entity';
+import { User, USERTYPE } from 'src/domain/users/user.entity';
 
 export const createMockUser = (overrides?: Partial<User>): User => ({
   id: `${Math.random() * 8}-0000-0000-0000-000000000000`,

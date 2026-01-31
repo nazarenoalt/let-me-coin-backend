@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { DashboardService } from './dashboard.service';
-import { CreateDashboardDto } from './dto/create-dashboard.dto';
-import { UpdateDashboardDto } from './dto/update-dashboard.dto';
+import { CreateDashboardDto } from '../../domain/dashboard/dto/create-dashboard.dto';
+import { UpdateDashboardDto } from '../../domain/dashboard/dto/update-dashboard.dto';
 
 @Controller('dashboard')
 export class DashboardController {
@@ -23,7 +31,10 @@ export class DashboardController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateDashboardDto: UpdateDashboardDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateDashboardDto: UpdateDashboardDto,
+  ) {
     return this.dashboardService.update(+id, updateDashboardDto);
   }
 

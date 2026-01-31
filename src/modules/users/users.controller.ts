@@ -10,11 +10,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { PaginationUserDto } from './dto';
-import { BulkUpdateUserDto } from './dto/bulk-update-users.dto';
-import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
+import { CreateUserDto } from '../../domain/users/dto/create-user.dto';
+import { UpdateUserDto } from '../../domain/users/dto/update-user.dto';
+import { PaginationUserDto } from '../../domain/users/dto';
+import { BulkUpdateUserDto } from '../../domain/users/dto/bulk-update-users.dto';
+import { BulkRemoveUsersDto } from '../../domain/users/dto/bulk-remove-users.dto';
 
 @Controller('users')
 export class UsersController {

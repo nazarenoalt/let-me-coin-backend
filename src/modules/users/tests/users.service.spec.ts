@@ -1,14 +1,14 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from './users.service';
+import { UsersService } from '../users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   BadRequestException,
   NotFoundException,
   InternalServerErrorException,
 } from '@nestjs/common';
-import { User } from './entities/user.entity';
-import { CreateUserDto, UpdateUserDto } from './dto';
-import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
+import { User } from '../../../domain/users/user.entity';
+import { CreateUserDto, UpdateUserDto } from '../../../domain/users/dto';
+import { BulkRemoveUsersDto } from '../../../domain/users/dto/bulk-remove-users.dto';
 
 describe('UsersService', () => {
   let service: UsersService;

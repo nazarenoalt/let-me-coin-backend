@@ -1,7 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersController } from './users.controller';
-import { UsersService } from './users.service';
-import { createMockUser } from 'src/common/test-data/user.factory';
+import { UsersController } from '../users.controller';
+import { UsersService } from '../users.service';
+import { createMockUser } from 'src/modules/common/test-data/user.factory';
 
 describe('UsersController', () => {
   let controller: UsersController;

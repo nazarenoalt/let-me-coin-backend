@@ -6,12 +6,16 @@ import {
   Logger,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateUserDto, UpdateUserDto, PaginationUserDto } from './dto';
+import {
+  CreateUserDto,
+  UpdateUserDto,
+  PaginationUserDto,
+} from '../../domain/users/dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from './entities/user.entity';
+import { User } from '../../domain/users/user.entity';
 import { Repository } from 'typeorm';
-import { cleanObject } from 'src/common/helpers/object.helper';
-import { BulkRemoveUsersDto } from './dto/bulk-remove-users.dto';
+import { cleanObject } from 'src/modules/common/helpers/object.helper';
+import { BulkRemoveUsersDto } from '../../domain/users/dto/bulk-remove-users.dto';
 
 @Injectable()
 export class UsersService {

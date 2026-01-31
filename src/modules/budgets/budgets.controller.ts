@@ -1,7 +1,15 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { BudgetsService } from './budgets.service';
-import { CreateBudgetDto } from './dto/create-budget.dto';
-import { UpdateBudgetDto } from './dto/update-budget.dto';
+import { CreateBudgetDto } from '../../domain/budgets/dto/create-budget.dto';
+import { UpdateBudgetDto } from '../../domain/budgets/dto/update-budget.dto';
 
 @Controller('budgets')
 export class BudgetsController {

@@ -3,14 +3,14 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { CategoriesModule } from './categories/categories.module';
-import { BudgetsModule } from './budgets/budgets.module';
+import { AuthModule } from './modules/auth/auth.module';
+import { UsersModule } from './modules/users/users.module';
+import { CategoriesModule } from './modules/categories/categories.module';
+import { BudgetsModule } from './modules/budgets/budgets.module';
 import { TransactionsModule } from './transactions/transactions.module';
-import { DashboardModule } from './dashboard/dashboard.module';
-import { CommonModule } from './common/common.module';
-import { DatabaseModule } from './database/database.module';
+import { DashboardModule } from './modules/dashboard/dashboard.module';
+import { CommonModule } from './modules/common/common.module';
+import { DatabaseModule } from './modules/database/database.module';
 
 @Module({
   imports: [
