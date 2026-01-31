@@ -10,7 +10,6 @@ import { BudgetsModule } from '@infrastructure/modules/budgets/budgets.module';
 import { TransactionsModule } from '@infrastructure/modules/transactions/transactions.module';
 import { DashboardModule } from '@infrastructure/modules/dashboard/dashboard.module';
 import { CommonModule } from '@infrastructure/modules/common/common.module';
-import { DatabaseModule } from '@infrastructure/modules/database/database.module';
 
 @Module({
   imports: [
@@ -34,7 +33,6 @@ import { DatabaseModule } from '@infrastructure/modules/database/database.module
     TransactionsModule,
     DashboardModule,
     CommonModule,
-    DatabaseModule,
   ],
   controllers: [AppController],
   providers: [AppService],
