@@ -1,6 +1,5 @@
-import { type currencyCode } from 'src/domain/types/currencyCode.type';
-import { User } from 'src/users/entities/user.entity';
-
+import { type currencyCode } from '@domain/types/currencyCode.type';
+import { User } from '@domain/users/user.entity';
 import {
   Column,
   CreateDateColumn,
