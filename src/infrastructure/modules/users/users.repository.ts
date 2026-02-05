@@ -15,12 +15,6 @@ import { cleanObject } from '@infrastructure/modules/common/helpers/object.helpe
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { DeleteResult } from 'typeorm/browser';
 
-/**
- * Capa de Infrastructure: implementación concreta del repositorio.
- * - Conoce TypeORM, QueryBuilder, codigos de error de Postgres.
- * - Implementa IUserRepository (el contrato del dominio).
- * - La lógica de negocio NO vive aquí.
- */
 @Injectable()
 export class UsersRepository implements IUsersRepository {
   private readonly logger = new Logger(UsersRepository.name);
