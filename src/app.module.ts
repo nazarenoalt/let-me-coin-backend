@@ -3,15 +3,13 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
-import { CategoriesModule } from './categories/categories.module';
-import { BudgetsModule } from './budgets/budgets.module';
-import { TransactionsModule } from './transactions/transactions.module';
-import { DashboardModule } from './dashboard/dashboard.module';
-import { CommonModule } from './common/common.module';
-import { DatabaseModule } from './database/database.module';
-import { AccountsModule } from './accounts/accounts.module';
+import { AuthModule } from '@infrastructure/modules/auth/auth.module';
+import { UsersModule } from '@infrastructure/modules/users/users.module';
+import { CategoriesModule } from '@infrastructure/modules/categories/categories.module';
+import { BudgetsModule } from '@infrastructure/modules/budgets/budgets.module';
+import { TransactionsModule } from '@infrastructure/modules/transactions/transactions.module';
+import { DashboardModule } from '@infrastructure/modules/dashboard/dashboard.module';
+import { CommonModule } from '@infrastructure/modules/common/common.module';
 
 @Module({
   imports: [
@@ -35,8 +33,11 @@ import { AccountsModule } from './accounts/accounts.module';
     TransactionsModule,
     DashboardModule,
     CommonModule,
+<<<<<<< HEAD
     DatabaseModule,
     AccountsModule,
+=======
+>>>>>>> origin/main
   ],
   controllers: [AppController],
   providers: [AppService],
