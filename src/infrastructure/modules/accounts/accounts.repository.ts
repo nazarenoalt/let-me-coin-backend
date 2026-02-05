@@ -15,6 +15,7 @@ export class AccountsRepository implements IAccountsRepository {
     private readonly repository: Repository<Account>,
   ) {}
 
+  // TODO: user ID must be transferred on DTO to link the user to the account?
   async create(dto: CreateAccountDto): Promise<Account> {
     const user = this.repository.create(dto);
     try {

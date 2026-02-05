@@ -12,3 +12,5 @@ export interface IAccountsRepository {
   update(id: string, dto: UpdateAccountDto): Promise<UpdateResult>;
   remove(id: string): Promise<DeleteResult>;
 }
+
+export const ACCOUNTS_REPOSITORY = 'AccountsRepository';

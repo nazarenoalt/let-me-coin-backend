@@ -34,9 +34,6 @@ export class Account {
 
   // TODO @OneToMany(TRANSACTIONS)
 
-  // TODO @OneToMany(CATEGORIES)
-
-  // TODO @OneToMany(BUDGETS)
   @CreateDateColumn()
   createdAt: Date;
 

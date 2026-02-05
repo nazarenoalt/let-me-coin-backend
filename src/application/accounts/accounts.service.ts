@@ -1,26 +1,44 @@
-import { Injectable } from '@nestjs/common';
-import { CreateAccountDto } from '../domain/accounts/dto/create-account.dto';
-import { UpdateAccountDto } from '../domain/accounts/dto/update-account.dto';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateAccountDto } from '@domain/accounts/dto/create-account.dto';
+import { UpdateAccountDto } from '@domain/accounts/dto/update-account.dto';
+import {
+  ACCOUNTS_REPOSITORY,
+  type IAccountsRepository,
+} from '@domain/accounts/interfaces/accounts.repository.interface';
+import { PaginationDto } from '@infrastructure/modules/common/dto/pagination.dto';
 
 @Injectable()
 export class AccountsService {
-  create(createAccountDto: CreateAccountDto) {
-    return 'This action adds a new account';
+  constructor(
+    @Inject(ACCOUNTS_REPOSITORY)
+    private readonly accountsRepository: IAccountsRepository,
+  ) {}
+  create(dto: CreateAccountDto) {
+    return this.accountsRepository.create(dto);
   }
 
-  findAll() {
-    return `This action returns all accounts`;
+  findAll(pagination: PaginationDto) {
+    return this.accountsRepository.findAll(pagination);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} account`;
+  async findOne(id: string) {
+    const account = await this.accountsRepository.findOne(id);
+    if (!account) {
+      throw new NotFoundException('Account not found');
+    }
+    return account;
   }
 
-  update(id: number, updateAccountDto: UpdateAccountDto) {
-    return `This action updates a #${id} account`;
+  update(id: string, dto: UpdateAccountDto) {
+    return this.accountsRepository.update(id, dto);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} account`;
+  async remove(id: string) {
+    const account = await this.accountsRepository.findOne(id);
+
+    if (!account) {
+      throw new NotFoundException('The account to be deleted does not exist.');
+    }
+    return this.accountsRepository.remove(id);
   }
 }
