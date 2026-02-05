@@ -1,4 +1,4 @@
-import { Account } from 'src/accounts/entities/account.entity';
+import { Account } from '@domain/accounts/account.entity';
 import {
   BeforeInsert,
   Column,
