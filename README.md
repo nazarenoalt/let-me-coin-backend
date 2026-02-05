@@ -31,3 +31,18 @@ $ npm run test:e2e
 # test coverage
 $ npm run test:cov
 ```
+
+## Modules development evolution
+
+| Module        | Status         |
+| ------------- | -------------- |
+| Users         | Completed      |
+| Accounts      | In Development |
+| Categories    | To do          |
+| Transactions  | To do          |
+| Budgets       | To do          |
+| Auth          | To do          |
+
+
+
+
