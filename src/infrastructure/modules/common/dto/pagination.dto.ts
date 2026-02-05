@@ -1,6 +1,6 @@
 import { IsNumber, IsOptional, IsPositive, Max } from 'class-validator';
 
-export class PaginationUserDto {
+export class PaginationDto {
   @IsNumber()
   @Max(50)
   @IsPositive()

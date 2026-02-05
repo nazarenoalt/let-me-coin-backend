@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { TransactionsService } from '@applications/transactions/transactions.service';
+import { TransactionsService } from 'src/application/transactions/transactions.service';
 import { CreateTransactionDto } from '@domain/transactions/dto/create-transaction.dto';
 import { UpdateTransactionDto } from '@domain/transactions/dto/update-transaction.dto';
 

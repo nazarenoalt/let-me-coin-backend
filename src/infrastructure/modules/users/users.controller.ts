@@ -9,12 +9,12 @@ import {
   ParseUUIDPipe,
   Query,
 } from '@nestjs/common';
-import { UsersService } from '@applications/users/users.service';
+import { UsersService } from '@application/users/users.service';
 import { CreateUserDto } from '@domain/users/dto/create-user.dto';
 import { UpdateUserDto } from '@domain/users/dto/update-user.dto';
-import { PaginationUserDto } from '@domain/users/dto';
 import { BulkUpdateUserDto } from '@domain/users/dto/bulk-update-users.dto';
 import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
+import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('users')
 export class UsersController {
@@ -26,7 +26,7 @@ export class UsersController {
   }
 
   @Get()
-  findAll(@Query() pagination: Partial<PaginationUserDto>) {
+  findAll(@Query() pagination: Partial<PaginationDto>) {
     return this.usersService.findAll(pagination);
   }
 
@@ -49,10 +49,7 @@ export class UsersController {
   }
 
   @Delete('bulk')
-  removeMany(
-    @Body()
-    dto: BulkRemoveUsersDto,
-  ) {
+  removeMany(@Body() dto: BulkRemoveUsersDto) {
     return this.usersService.removeMany(dto);
   }
 

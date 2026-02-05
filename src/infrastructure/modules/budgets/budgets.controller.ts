@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { BudgetsService } from '@applications/budgets/budgets.service';
+import { BudgetsService } from 'src/application/budgets/budgets.service';
 import { CreateBudgetDto } from '@domain/budgets/dto/create-budget.dto';
 import { UpdateBudgetDto } from '@domain/budgets/dto/update-budget.dto';
 

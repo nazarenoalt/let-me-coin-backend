@@ -7,7 +7,7 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-import { CategoriesService } from '@applications/categories/categories.service';
+import { CategoriesService } from 'src/application/categories/categories.service';
 import { CreateCategoryDto } from '@domain/categories/dto/create-category.dto';
 import { UpdateCategoryDto } from '@domain/categories/dto/update-category.dto';
 

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { CategoriesService } from '@applications/categories/categories.service';
+import { CategoriesService } from 'src/application/categories/categories.service';
 import { CategoriesController } from './categories.controller';
 
 @Module({
