@@ -5,7 +5,6 @@ import {
   ACCOUNTS_REPOSITORY,
   type IAccountsRepository,
 } from '@domain/accounts/interfaces/accounts.repository.interface';
-import { PaginationDto } from '@infrastructure/modules/common/dto/pagination.dto';
 
 @Injectable()
 export class AccountsService {
@@ -18,8 +17,8 @@ export class AccountsService {
     return this.accountsRepository.create(userId, dto);
   }
 
-  findAll(pagination: PaginationDto) {
-    return this.accountsRepository.findAll(pagination);
+  findByUserId(userId: string) {
+    return this.accountsRepository.findByUserId(userId);
   }
 
   async findOne(id: string) {

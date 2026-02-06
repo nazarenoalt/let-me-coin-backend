@@ -7,12 +7,10 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
-  Query,
 } from '@nestjs/common';
 import { AccountsService } from '@application/accounts/accounts.service';
 import { CreateAccountDto } from '@domain/accounts/dto/create-account.dto';
 import { UpdateAccountDto } from '@domain/accounts/dto/update-account.dto';
-import { PaginationDto } from '../common/dto/pagination.dto';
 
 @Controller('accounts')
 export class AccountsController {
@@ -25,8 +23,8 @@ export class AccountsController {
   }
 
   @Get()
-  findAll(@Query() pagination: PaginationDto) {
-    return this.accountsService.findAll(pagination);
+  findByUserId(@Body() userId: string) {
+    return this.accountsService.findByUserId(userId);
   }
 
   @Get(':id')

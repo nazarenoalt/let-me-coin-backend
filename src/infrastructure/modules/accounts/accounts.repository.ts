@@ -1,6 +1,5 @@
 import { Account } from '@domain/accounts/account.entity';
 import { IAccountsRepository } from '@domain/accounts/interfaces/accounts.repository.interface';
-import { PaginationDto } from '../common/dto/pagination.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
 import {
@@ -42,11 +41,10 @@ export class AccountsRepository implements IAccountsRepository {
     }
   }
 
-  async findAll({ limit = 0, offset = 0 }: PaginationDto): Promise<Account[]> {
+  async findByUserId(userId: string): Promise<Account[]> {
     try {
       return await this.accountRepository.find({
-        skip: offset,
-        take: limit,
+        where: { user: { id: userId } },
       });
     } catch (error) {
       // TODO: replace exception with global exception handler
