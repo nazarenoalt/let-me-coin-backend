@@ -13,6 +13,7 @@ export class AccountsService {
     @Inject(ACCOUNTS_REPOSITORY)
     private readonly accountsRepository: IAccountsRepository,
   ) {}
+
   create(userId: string, dto: CreateAccountDto) {
     return this.accountsRepository.create(userId, dto);
   }
