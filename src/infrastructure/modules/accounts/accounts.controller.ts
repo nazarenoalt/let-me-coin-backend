@@ -22,6 +22,7 @@ export class AccountsController {
     return this.accountsService.create(userId, dto);
   }
 
+  // TODO: When the authentication module is complete, replace the userId retrieval from the body to the request
   @Get()
   findByUserId(@Body() userId: string) {
     return this.accountsService.findByUserId(userId);
