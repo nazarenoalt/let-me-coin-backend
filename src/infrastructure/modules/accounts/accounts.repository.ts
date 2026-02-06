@@ -18,6 +18,7 @@ export class AccountsRepository implements IAccountsRepository {
   constructor(
     @InjectRepository(Account)
     private readonly accountRepository: Repository<Account>,
+    @InjectRepository(User)
     private readonly userRepository: Repository<User>,
   ) {}
 
