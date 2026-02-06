@@ -6,7 +6,7 @@ import { PaginationDto } from '@infrastructure/modules/common/dto/pagination.dto
 import { UpdateResult } from 'typeorm/browser';
 
 export interface IAccountsRepository {
-  create(dto: CreateAccountDto): Promise<Account>;
+  create(userId: string, dto: CreateAccountDto): Promise<Account>;
   findAll(pagination: PaginationDto): Promise<Account[]>;
   findOne(id: string): Promise<Account | null>;
   update(id: string, dto: UpdateAccountDto): Promise<UpdateResult>;

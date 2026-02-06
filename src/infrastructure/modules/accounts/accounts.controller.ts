@@ -18,9 +18,10 @@ import { PaginationDto } from '../common/dto/pagination.dto';
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
+  // TODO: When the authentication module is complete, replace the userId retrieval from the body to the request
   @Post()
-  create(@Body() dto: CreateAccountDto) {
-    return this.accountsService.create(dto);
+  create(@Body() userId: string, @Body() dto: CreateAccountDto) {
+    return this.accountsService.create(userId, dto);
   }
 
   @Get()
