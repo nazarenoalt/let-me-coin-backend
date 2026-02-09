@@ -1,6 +1,6 @@
 import type { currencyCode } from '@domain/types/currencyCode.type';
 import { CURRENCY } from '@domain/constants/currency.const';
-import { IsBoolean, IsIn, IsNotEmpty, IsString } from 'class-validator';
+import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAccountDto {
   @IsString()
@@ -10,6 +10,7 @@ export class CreateAccountDto {
   @IsIn(Object.keys(CURRENCY))
   currency: currencyCode;
 
-  @IsBoolean()
-  isActive: boolean;
+  // TODO: Remove this after auth module is created and implemented.
+  @IsString()
+  userId: string;
 }
