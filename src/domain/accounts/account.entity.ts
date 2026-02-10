@@ -16,11 +16,14 @@ export class Account {
 
   @Column({
     type: 'varchar',
-    length: 3,
+    length: 100,
   })
   name: string;
 
-  @Column('varchar')
+  @Column({
+    type: 'varchar',
+    length: 3,
+  })
   currency: currencyCode;
 
   @Column({

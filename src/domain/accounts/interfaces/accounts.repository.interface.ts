@@ -5,7 +5,7 @@ import { UpdateAccountDto } from '../dto/update-account.dto';
 import { UpdateResult } from 'typeorm/browser';
 
 export interface IAccountsRepository {
-  create(userId: string, dto: CreateAccountDto): Promise<Account>;
+  create(dto: CreateAccountDto): Promise<Account>;
   findByUserId(userId: string): Promise<Account[]>;
   findOne(id: string): Promise<Account | null>;
   update(id: string, dto: UpdateAccountDto): Promise<UpdateResult>;

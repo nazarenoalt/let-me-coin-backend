@@ -13,8 +13,8 @@ export class AccountsService {
     private readonly accountsRepository: IAccountsRepository,
   ) {}
 
-  create(userId: string, dto: CreateAccountDto) {
-    return this.accountsRepository.create(userId, dto);
+  create(dto: CreateAccountDto) {
+    return this.accountsRepository.create(dto);
   }
 
   findByUserId(userId: string) {

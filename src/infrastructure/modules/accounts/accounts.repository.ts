@@ -22,8 +22,10 @@ export class AccountsRepository implements IAccountsRepository {
   ) {}
 
   // TODO: user ID must be transferred on DTO to link the user to the account?
-  async create(userId: string, dto: CreateAccountDto): Promise<Account> {
-    const user = await this.userRepository.findOne({ where: { id: userId } });
+  async create(dto: CreateAccountDto): Promise<Account> {
+    const user = await this.userRepository.findOne({
+      where: { id: dto.userId },
+    });
     if (!user)
       throw new NotFoundException(
         'The user Id is incorrect, the user does not exist.',

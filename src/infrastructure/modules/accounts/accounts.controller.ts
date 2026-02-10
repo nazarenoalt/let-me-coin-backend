@@ -16,15 +16,15 @@ import { UpdateAccountDto } from '@domain/accounts/dto/update-account.dto';
 export class AccountsController {
   constructor(private readonly accountsService: AccountsService) {}
 
-  // TODO: When the authentication module is complete, replace the userId retrieval from the body to the request
+  // TODO: When the authentication module is complete, remove the userId attribute from CreateAccountDto and embbeb instead the userId from the session
   @Post()
-  create(@Body() userId: string, @Body() dto: CreateAccountDto) {
-    return this.accountsService.create(userId, dto);
+  create(@Body() dto: CreateAccountDto) {
+    return this.accountsService.create(dto);
   }
 
   // TODO: When the authentication module is complete, replace the userId retrieval from the body to the request
   @Get()
-  findByUserId(@Body() userId: string) {
+  findByUserId(@Body('userId', ParseUUIDPipe) userId: string) {
     return this.accountsService.findByUserId(userId);
   }
 
