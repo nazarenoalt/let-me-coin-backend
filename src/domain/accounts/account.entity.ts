@@ -32,7 +32,11 @@ export class Account {
   })
   isActive: boolean;
 
-  @ManyToOne(() => User, (user) => user.accounts)
+  @ManyToOne(() => User, (user) => user.accounts, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
   user: User;
 
   // TODO @OneToMany(TRANSACTIONS)

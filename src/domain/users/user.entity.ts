@@ -32,7 +32,9 @@ export class User {
   @Column({ type: 'jsonb', nullable: true })
   preferences: Record<string, any>;
 
-  @OneToMany(() => Account, (accounts) => accounts.user)
+  @OneToMany(() => Account, (accounts) => accounts.user, {
+    cascade: true,
+  })
   accounts: Account[];
 
   @CreateDateColumn()
