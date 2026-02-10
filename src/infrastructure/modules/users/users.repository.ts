@@ -51,11 +51,15 @@ export class UsersRepository implements IUsersRepository {
     return this.userRepository.find({
       skip: offset,
       take: limit,
+      relations: ['accounts'],
     });
   }
 
   async findOne(id: string) {
-    return this.userRepository.findOne({ where: { id } });
+    return this.userRepository.findOne({
+      where: { id },
+      relations: ['accounts'],
+    });
   }
 
   async update(id: string, dto: UpdateUserDto) {
