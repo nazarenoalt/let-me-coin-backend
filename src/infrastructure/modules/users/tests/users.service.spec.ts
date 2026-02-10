@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { UsersService } from '../@application/users/users.service';
+import { UsersService } from '@application/users/users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import {
   BadRequestException,
