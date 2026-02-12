@@ -33,7 +33,7 @@ export class User {
   preferences: Record<string, any>;
 
   @OneToMany(() => Account, (accounts) => accounts.user, {
-    cascade: true,
+    cascade: ['insert', 'update'],
   })
   accounts: Account[];
 

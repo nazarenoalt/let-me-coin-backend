@@ -34,7 +34,6 @@ export class Account {
 
   @ManyToOne(() => User, (user) => user.accounts, {
     onDelete: 'CASCADE',
-    onUpdate: 'CASCADE',
     orphanedRowAction: 'delete',
   })
   user: User;
