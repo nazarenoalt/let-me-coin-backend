@@ -44,7 +44,7 @@ export const PostgresErrorCodes = {
 } as const;
 
 // https://claude.ai/chat/e4852a9d-208e-4678-bfa5-3f1a1877a171
-@Catch(QueryFailedError, EntityNotFoundError)
+@Catch(QueryFailedError, EntityNotFoundError, Error)
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
