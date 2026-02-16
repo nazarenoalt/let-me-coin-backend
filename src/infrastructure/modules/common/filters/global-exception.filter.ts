@@ -3,8 +3,10 @@ import {
   Catch,
   ExceptionFilter,
   HttpStatus,
+  Logger,
 } from '@nestjs/common';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
+import { Response, Request } from 'express';
 
 export const PostgresErrorCodes = {
   // Integrity violations (23xxx)
@@ -44,10 +46,9 @@ export const PostgresErrorCodes = {
 // https://claude.ai/chat/e4852a9d-208e-4678-bfa5-3f1a1877a171
 @Catch(QueryFailedError, EntityNotFoundError)
 export class GlobalExceptionFilter implements ExceptionFilter {
-  catch(
-    exception: QueryFailedError | EntityNotFoundError,
-    host: ArgumentsHost,
-  ) {
+  private readonly logger = new Logger(GlobalExceptionFilter.name);
+
+  catch(exception: unknown, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const req = ctx.getRequest<Request>();
     const res = ctx.getResponse<Response>();
@@ -61,9 +62,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     if (exception instanceof EntityNotFoundError) {
       status = HttpStatus.NOT_FOUND;
       message = 'The requested resource does not exist.';
-    }
-
-    if (exception instanceof QueryFailedError) {
+    } else if (exception instanceof QueryFailedError) {
       // Integrity violations
       if (err.code === PostgresErrorCodes.UNIQUE_VIOLATION) {
         status = HttpStatus.CONFLICT;
@@ -181,7 +180,16 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         error = 'Serialization Failure';
         message = `Concurrence conflict. Try again.`;
       }
+    } else if (exception instanceof Error) {
+      this.logger.error(
+        `Uncontrolled error: ${exception.message}`,
+        exception.stack,
+      );
+    } else {
+      this.logger.error('Unkown exception', exception);
     }
+
+    const isDevelopment = process.env.ENVIRONMENT === 'development';
 
     res.status(status).json({
       statusCode: status,
@@ -189,6 +197,11 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       message,
       timestamp: new Date().toISOString(),
       path: req.url,
+      ...(isDevelopment &&
+        exception instanceof Error && {
+          stack: exception.stack,
+          details: exception,
+        }),
     });
   }
 }
