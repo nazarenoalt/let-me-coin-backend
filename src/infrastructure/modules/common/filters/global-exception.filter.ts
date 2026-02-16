@@ -88,7 +88,7 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         status = HttpStatus.BAD_REQUEST;
         error = 'Not Null Violation';
 
-        const column = error.column || 'unknown';
+        const column = err.column || 'unknown';
         message = `The field ${column} is mandatory and it cannot be null.`;
       } else if (err.code === PostgresErrorCodes.CHECK_VIOLATION) {
         status = HttpStatus.BAD_REQUEST;
@@ -185,8 +185,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         `Uncontrolled error: ${exception.message}`,
         exception.stack,
       );
-    } else {
-      this.logger.error('Unkown exception', exception);
     }
 
     const isDevelopment = process.env.ENVIRONMENT === 'development';
