@@ -7,7 +7,6 @@ import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
 import { cleanObject } from '@infrastructure/modules/common/helpers/object.helper';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { DeleteResult } from 'typeorm/browser';
-import { Account } from '@domain/accounts/account.entity';
 import { IUsersRepository } from '@domain/users/interfaces/user.repository.interface';
 import { CURRENCY } from '@domain/constants/currency.const';
 @Injectable()
@@ -15,8 +14,6 @@ export class UsersRepository implements IUsersRepository {
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
-    @InjectRepository(User)
-    private readonly accountRepository: Repository<Account>,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
