@@ -51,7 +51,7 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    await this.userRepository
+    return await this.userRepository
       .createQueryBuilder()
       .update(User)
       .set({
@@ -62,8 +62,8 @@ export class UsersRepository implements IUsersRepository {
       .execute();
   }
 
-  async updateMany(ids: string[], dto: UpdateUserDto): Promise<void> {
-    await this.userRepository
+  async updateMany(ids: string[], dto: UpdateUserDto) {
+    return await this.userRepository
       .createQueryBuilder()
       .update(User)
       .set({
@@ -78,8 +78,8 @@ export class UsersRepository implements IUsersRepository {
     return await this.userRepository.delete({ id });
   }
 
-  async removeMany({ ids }: BulkRemoveUsersDto): Promise<void> {
-    await this.userRepository
+  async removeMany({ ids }: BulkRemoveUsersDto) {
+    return await this.userRepository
       .createQueryBuilder()
       .delete()
       .from(User)

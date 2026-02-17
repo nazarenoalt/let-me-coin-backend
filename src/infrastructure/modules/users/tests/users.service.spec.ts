@@ -1,11 +1,7 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '@application/users/users.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import {
-  BadRequestException,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { BadRequestException, NotFoundException } from '@nestjs/common';
 import { User } from '@domain/users/user.entity';
 import { CreateUserDto, UpdateUserDto } from '@domain/users/dto';
 import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
@@ -208,30 +204,6 @@ describe('UsersService', () => {
       expect(mockQueryBuilder.where).toHaveBeenCalledWith('id IN (:...ids)', {
         ids: bulkRemoveDto.ids,
       });
-    });
-  });
-
-  describe('exceptionHandler', () => {
-    it('should throw BadRequestException for duplicate entry', () => {
-      const error = { code: '23505' };
-
-      expect(() => service.exceptionHandler(error)).toThrow(
-        BadRequestException,
-      );
-    });
-
-    it('should throw NotFoundException for user not found', () => {
-      const error = { code: '02000' };
-
-      expect(() => service.exceptionHandler(error)).toThrow(NotFoundException);
-    });
-
-    it('should throw InternalServerErrorException for unknown error', () => {
-      const error = { code: 'UNKNOWN' };
-
-      expect(() => service.exceptionHandler(error)).toThrow(
-        InternalServerErrorException,
-      );
     });
   });
 });

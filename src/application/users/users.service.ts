@@ -34,11 +34,14 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
-    return this.usersRepository.update(id, updateUserDto);
+  async update(id: string, updateUserDto: UpdateUserDto) {
+    const result = await this.usersRepository.update(id, updateUserDto);
+    if (result.affected === 0)
+      throw new NotFoundException(`ser with Id ${id} not found.`);
+    return result;
   }
 
-  async updateMany(ids: string[], data: UpdateUserDto): Promise<void> {
+  async updateMany(ids: string[], data: UpdateUserDto) {
     return this.usersRepository.updateMany(ids, data);
   }
 
