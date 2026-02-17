@@ -55,7 +55,7 @@ export class UsersService {
     return this.usersRepository.remove(id);
   }
 
-  removeMany(dto: BulkRemoveUsersDto): Promise<void> {
+  removeMany(dto: BulkRemoveUsersDto) {
     return this.usersRepository.removeMany(dto);
   }
 }
