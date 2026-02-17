@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Injectable,
-  Logger,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '@domain/users/user.entity';
@@ -15,11 +10,8 @@ import { DeleteResult } from 'typeorm/browser';
 import { Account } from '@domain/accounts/account.entity';
 import { IUsersRepository } from '@domain/users/interfaces/user.repository.interface';
 import { CURRENCY } from '@domain/constants/currency.const';
-import { UpdateResult } from 'typeorm/browser';
 @Injectable()
 export class UsersRepository implements IUsersRepository {
-  private readonly logger = new Logger(UsersRepository.name);
-
   constructor(
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
