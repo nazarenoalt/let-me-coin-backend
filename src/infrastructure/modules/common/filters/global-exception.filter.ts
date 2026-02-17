@@ -2,6 +2,7 @@ import {
   type ArgumentsHost,
   Catch,
   ExceptionFilter,
+  HttpException,
   HttpStatus,
   Logger,
 } from '@nestjs/common';
@@ -43,8 +44,13 @@ export const PostgresErrorCodes = {
   SERIALIZATION_FAILURE: '40001',
 } as const;
 
-// https://claude.ai/chat/e4852a9d-208e-4678-bfa5-3f1a1877a171
-@Catch(QueryFailedError, EntityNotFoundError, Error)
+type THttpExceptionResponse = {
+  statusCode: number;
+  message: string | string[];
+  error: string;
+};
+
+@Catch(QueryFailedError, EntityNotFoundError, HttpException, Error)
 export class GlobalExceptionFilter implements ExceptionFilter {
   private readonly logger = new Logger(GlobalExceptionFilter.name);
 
@@ -180,6 +186,22 @@ export class GlobalExceptionFilter implements ExceptionFilter {
         error = 'Serialization Failure';
         message = `Concurrence conflict. Try again.`;
       }
+    } else if (exception instanceof HttpException) {
+      const exceptionResponse = exception.getResponse();
+
+      if (typeof exceptionResponse === 'string') {
+        message = exceptionResponse;
+        error = exception.name;
+      } else {
+        const response = exceptionResponse as THttpExceptionResponse;
+        status = response.statusCode || status;
+        message = Array.isArray(exception.message)
+          ? exception.message.join(',')
+          : exception.message;
+        error = response.error || error;
+      }
+
+      this.logger.error(`HttpException: ${exception.message}`, exception.stack);
     } else if (exception instanceof Error) {
       this.logger.error(
         `Uncontrolled error: ${exception.message}`,

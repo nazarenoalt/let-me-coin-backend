@@ -1,7 +1,6 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException,
   Logger,
   NotFoundException,
 } from '@nestjs/common';
@@ -16,6 +15,7 @@ import { DeleteResult } from 'typeorm/browser';
 import { Account } from '@domain/accounts/account.entity';
 import { IUsersRepository } from '@domain/users/interfaces/user.repository.interface';
 import { CURRENCY } from '@domain/constants/currency.const';
+import { UpdateResult } from 'typeorm/browser';
 @Injectable()
 export class UsersRepository implements IUsersRepository {
   private readonly logger = new Logger(UsersRepository.name);
@@ -28,20 +28,16 @@ export class UsersRepository implements IUsersRepository {
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
-    try {
-      const user = this.userRepository.create({
-        ...dto,
-        accounts: [
-          {
-            name: `${dto.firstName}'s account`,
-            currency: CURRENCY.ARS.code,
-          },
-        ],
-      });
-      return await this.userRepository.save(user);
-    } catch (error) {
-      this.handleException(error);
-    }
+    const user = this.userRepository.create({
+      ...dto,
+      accounts: [
+        {
+          name: `${dto.firstName}'s account`,
+          currency: CURRENCY.ARS.code,
+        },
+      ],
+    });
+    return await this.userRepository.save(user);
   }
 
   async findAll({
@@ -63,74 +59,39 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    try {
-      await this.userRepository
-        .createQueryBuilder()
-        .update(User)
-        .set({
-          details: () => 'details || :newDetails::jsonb',
-        })
-        .setParameter('newDetails', JSON.stringify(cleanObject(dto.details)))
-        .where('id = :id', { id })
-        .execute();
-    } catch (error) {
-      this.handleException(error);
-    }
+    await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        details: () => 'details || :newDetails::jsonb',
+      })
+      .setParameter('newDetails', JSON.stringify(cleanObject(dto.details)))
+      .where('id = :id', { id })
+      .execute();
   }
 
   async updateMany(ids: string[], dto: UpdateUserDto): Promise<void> {
-    try {
-      await this.userRepository
-        .createQueryBuilder()
-        .update(User)
-        .set({
-          details: () => 'details || :newDetails::jsonb',
-        })
-        .setParameter('newDetails', JSON.stringify(cleanObject(dto.details)))
-        .where('id IN (:...ids)', { ids })
-        .execute();
-    } catch (error) {
-      this.handleException(error);
-    }
+    await this.userRepository
+      .createQueryBuilder()
+      .update(User)
+      .set({
+        details: () => 'details || :newDetails::jsonb',
+      })
+      .setParameter('newDetails', JSON.stringify(cleanObject(dto.details)))
+      .where('id IN (:...ids)', { ids })
+      .execute();
   }
 
   async remove(id: string): Promise<DeleteResult> {
-    try {
-      return await this.userRepository.delete({ id });
-    } catch (error) {
-      this.handleException(error);
-    }
+    return await this.userRepository.delete({ id });
   }
 
   async removeMany({ ids }: BulkRemoveUsersDto): Promise<void> {
-    try {
-      await this.userRepository
-        .createQueryBuilder()
-        .delete()
-        .from(User)
-        .where('id IN (:...ids)', { ids })
-        .execute();
-    } catch (error) {
-      this.handleException(error);
-    }
-  }
-
-  // This handleException method lives here because they're postgres exceptions.
-  private handleException(error: { code?: string; detail?: string }): never {
-    this.logger.error(error);
-
-    if (error.code === '23505') {
-      throw new BadRequestException(
-        error.detail || 'Duplicate entry detected.',
-      );
-    }
-
-    if (error.code === '02000') {
-      throw new NotFoundException('User not found.');
-    }
-
-    throw new InternalServerErrorException(
-      'An unexpected error occurred on the server',
-    );
+    await this.userRepository
+      .createQueryBuilder()
+      .delete()
+      .from(User)
+      .where('id IN (:...ids)', { ids })
+      .execute();
   }
 }

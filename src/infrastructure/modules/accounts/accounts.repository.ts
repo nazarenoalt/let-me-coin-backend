@@ -2,11 +2,7 @@ import { Account } from '@domain/accounts/account.entity';
 import { IAccountsRepository } from '@domain/accounts/interfaces/accounts.repository.interface';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeleteResult, Repository } from 'typeorm';
-import {
-  Injectable,
-  InternalServerErrorException,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateAccountDto } from '@domain/accounts/dto/create-account.dto';
 import { UpdateAccountDto } from '@domain/accounts/dto/update-account.dto';
 import { UpdateResult } from 'typeorm/browser';
@@ -21,7 +17,6 @@ export class AccountsRepository implements IAccountsRepository {
     private readonly userRepository: Repository<User>,
   ) {}
 
-  // TODO: user ID must be transferred on DTO to link the user to the account?
   async create(dto: CreateAccountDto): Promise<Account> {
     const user = await this.userRepository.findOne({
       where: { id: dto.userId },
@@ -35,49 +30,24 @@ export class AccountsRepository implements IAccountsRepository {
       ...dto,
       user,
     });
-    try {
-      return await this.accountRepository.save(account);
-    } catch (error) {
-      // TODO: replace exception with global exception handler
-      throw new InternalServerErrorException(error);
-    }
+    return await this.accountRepository.save(account);
   }
 
   async findByUserId(userId: string): Promise<Account[]> {
-    try {
-      return await this.accountRepository.find({
-        where: { user: { id: userId } },
-      });
-    } catch (error) {
-      // TODO: replace exception with global exception handler
-      throw new InternalServerErrorException(error);
-    }
+    return await this.accountRepository.find({
+      where: { user: { id: userId } },
+    });
   }
 
   async findOne(id: string): Promise<Account | null> {
-    try {
-      return await this.accountRepository.findOne({ where: { id } });
-    } catch (error) {
-      // TODO: replace exception with global exception handler
-      throw new InternalServerErrorException(error);
-    }
+    return await this.accountRepository.findOne({ where: { id } });
   }
 
   async update(id: string, dto: UpdateAccountDto): Promise<UpdateResult> {
-    try {
-      return await this.accountRepository.update(id, dto);
-    } catch (error) {
-      // TODO: replace exception with global exception handler
-      throw new InternalServerErrorException(error);
-    }
+    return await this.accountRepository.update(id, dto);
   }
 
   async remove(id: string): Promise<DeleteResult> {
-    try {
-      return await this.accountRepository.delete(id);
-    } catch (error) {
-      // TODO: replace exception with global exception handler
-      throw new InternalServerErrorException(error);
-    }
+    return await this.accountRepository.delete(id);
   }
 }
