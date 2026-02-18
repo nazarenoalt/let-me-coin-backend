@@ -1,35 +1,41 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { UsersService } from '@application/users/users.service';
-import { getRepositoryToken } from '@nestjs/typeorm';
-import {
-  BadRequestException,
-  NotFoundException,
-  InternalServerErrorException,
-} from '@nestjs/common';
+import { NotFoundException } from '@nestjs/common';
 import { User } from '@domain/users/user.entity';
 import { CreateUserDto, UpdateUserDto } from '@domain/users/dto';
 import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
+import { USERS_REPOSITORY } from '@domain/users/interfaces/user.repository.interface';
+import { DeleteResult, UpdateResult } from 'typeorm';
 
 describe('UsersService', () => {
   let service: UsersService;
-  let mockUserRepository;
+  let mockUsersRepository: {
+    create: jest.Mock;
+    findAll: jest.Mock;
+    findOne: jest.Mock;
+    update: jest.Mock;
+    updateMany: jest.Mock;
+    remove: jest.Mock;
+    removeMany: jest.Mock;
+  };
 
   beforeEach(async () => {
-    mockUserRepository = {
+    mockUsersRepository = {
       create: jest.fn(),
-      save: jest.fn(),
-      find: jest.fn(),
+      findAll: jest.fn(),
       findOne: jest.fn(),
+      update: jest.fn(),
+      updateMany: jest.fn(),
       remove: jest.fn(),
-      createQueryBuilder: jest.fn(),
+      removeMany: jest.fn(),
     };
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         UsersService,
         {
-          provide: getRepositoryToken(User),
-          useValue: mockUserRepository,
+          provide: USERS_REPOSITORY,
+          useValue: mockUsersRepository,
         },
       ],
     }).compile();
@@ -37,201 +43,201 @@ describe('UsersService', () => {
     service = module.get<UsersService>(UsersService);
   });
 
+  // ══════════════════════════════════════════════════════════
+  // create
+  // ══════════════════════════════════════════════════════════
+
   describe('create', () => {
-    it('should create and return a new user', async () => {
-      const createUserDto: CreateUserDto = { email: 'test@example.com' } as any;
-      const user = { id: '1', ...createUserDto };
+    it('should delegate to repository and return the new user', async () => {
+      const dto: CreateUserDto = { email: 'test@example.com' } as any;
+      const user: User = { id: '1', ...dto } as any;
 
-      mockUserRepository.create.mockReturnValue(createUserDto);
-      mockUserRepository.save.mockResolvedValue(user);
+      mockUsersRepository.create.mockResolvedValue(user);
 
-      expect(await service.create(createUserDto)).toEqual(user);
-      expect(mockUserRepository.create).toHaveBeenCalledWith(createUserDto);
-      expect(mockUserRepository.save).toHaveBeenCalledWith(createUserDto);
+      await expect(service.create(dto)).resolves.toEqual(user);
+      expect(mockUsersRepository.create).toHaveBeenCalledWith(dto);
     });
 
-    it('should throw BadRequestException on duplicate entry', async () => {
-      const createUserDto: CreateUserDto = { email: 'test@example.com' } as any;
-      const error = { code: '23505', detail: 'duplicate key value' };
+    it('should bubble up repository errors without transforming them', async () => {
+      const dto: CreateUserDto = { email: 'test@example.com' } as any;
+      const dbError = Object.assign(new Error('db error'), { code: '23505' });
 
-      mockUserRepository.create.mockReturnValue(createUserDto);
-      mockUserRepository.save.mockRejectedValue(error);
+      mockUsersRepository.create.mockRejectedValue(dbError);
 
-      await expect(service.create(createUserDto)).rejects.toThrow(
-        BadRequestException,
-      );
+      await expect(service.create(dto)).rejects.toMatchObject({
+        code: '23505',
+      });
     });
   });
+
+  // ══════════════════════════════════════════════════════════
+  // findAll
+  // ══════════════════════════════════════════════════════════
 
   describe('findAll', () => {
-    it('should return users with default pagination', async () => {
-      const users = [{ id: '1', email: 'test@example.com' }];
+    it('should delegate to repository with the received pagination', async () => {
+      const users: User[] = [{ id: '1', email: 'test@example.com' } as any];
 
-      mockUserRepository.find.mockResolvedValue(users);
+      mockUsersRepository.findAll.mockResolvedValue(users);
 
-      expect(await service.findAll({})).toEqual(users);
-      expect(mockUserRepository.find).toHaveBeenCalledWith({
-        skip: 0,
-        take: 50,
+      await expect(service.findAll({ offset: 0, limit: 50 })).resolves.toEqual(
+        users,
+      );
+      expect(mockUsersRepository.findAll).toHaveBeenCalledWith({
+        offset: 0,
+        limit: 50,
       });
     });
 
-    it('should return users with custom pagination', async () => {
-      const users = [{ id: '2', email: 'test2@example.com' }];
+    it('should work with an empty pagination object', async () => {
+      mockUsersRepository.findAll.mockResolvedValue([]);
 
-      mockUserRepository.find.mockResolvedValue(users);
-
-      expect(await service.findAll({ offset: 10, limit: 25 })).toEqual(users);
-      expect(mockUserRepository.find).toHaveBeenCalledWith({
-        skip: 10,
-        take: 25,
-      });
+      await expect(service.findAll({})).resolves.toEqual([]);
+      expect(mockUsersRepository.findAll).toHaveBeenCalledWith({});
     });
   });
 
+  // ══════════════════════════════════════════════════════════
+  // findOne
+  // ══════════════════════════════════════════════════════════
+
   describe('findOne', () => {
-    it('should return a user by id', async () => {
-      const user = { id: '1', email: 'test@example.com' };
+    it('should return the user when the repository finds it', async () => {
+      const user: User = { id: '1', email: 'test@example.com' } as any;
 
-      mockUserRepository.findOne.mockResolvedValue(user);
+      mockUsersRepository.findOne.mockResolvedValue(user);
 
-      expect(await service.findOne('1')).toEqual(user);
-      expect(mockUserRepository.findOne).toHaveBeenCalledWith({
-        where: { id: '1' },
-      });
+      await expect(service.findOne('1')).resolves.toEqual(user);
+      expect(mockUsersRepository.findOne).toHaveBeenCalledWith('1');
     });
 
-    it('should throw NotFoundException when user not found', async () => {
-      mockUserRepository.findOne.mockResolvedValue(null);
+    it('should throw NotFoundException when the user does not exist', async () => {
+      mockUsersRepository.findOne.mockResolvedValue(null);
 
       await expect(service.findOne('999')).rejects.toThrow(NotFoundException);
     });
+
+    it('NotFoundException message should include the requested id', async () => {
+      mockUsersRepository.findOne.mockResolvedValue(null);
+
+      await expect(service.findOne('abc-123')).rejects.toThrow('abc-123');
+    });
   });
+
+  // ══════════════════════════════════════════════════════════
+  // update
+  // ══════════════════════════════════════════════════════════
 
   describe('update', () => {
-    it('should update a user', async () => {
-      const id = '1';
-      const updateUserDto: UpdateUserDto = { details: { name: 'John' } } as any;
-      const result = { affected: 1 };
+    it('should return an UpdateResults object when the user exists', async () => {
+      const dto: UpdateUserDto = { details: { name: 'John' } } as any;
+      const result: UpdateResult = { affected: 1, raw: [], generatedMaps: [] };
 
-      const mockQueryBuilder = {
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        setParameter: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue(result),
-      };
+      mockUsersRepository.update.mockResolvedValue(result);
 
-      mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
-
-      expect(await service.update(id, updateUserDto)).toEqual(result);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith('id = :id', { id });
+      await expect(service.update('1', dto)).resolves.toEqual(result);
+      expect(mockUsersRepository.update).toHaveBeenCalledWith('1', dto);
     });
 
-    it('should throw error on update failure', async () => {
-      const id = '1';
-      const updateUserDto: UpdateUserDto = { details: { name: 'John' } } as any;
-      const error = { code: '23505' };
+    it('should throw NotFoundException when no rows were affected', async () => {
+      const dto: UpdateUserDto = { details: { name: 'John' } } as any;
+      const result: UpdateResult = { affected: 0, raw: [], generatedMaps: [] };
 
-      const mockQueryBuilder = {
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        setParameter: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockRejectedValue(error),
-      };
+      mockUsersRepository.update.mockResolvedValue(result);
 
-      mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      await expect(service.update('1', dto)).rejects.toThrow(NotFoundException);
+    });
 
-      await expect(service.update(id, updateUserDto)).rejects.toThrow(
-        BadRequestException,
-      );
+    it('should bubble up repository errors without transforming them', async () => {
+      const dto: UpdateUserDto = { details: { name: 'John' } } as any;
+      const dbError = Object.assign(new Error('db error'), { code: '23505' });
+
+      mockUsersRepository.update.mockRejectedValue(dbError);
+
+      await expect(service.update('1', dto)).rejects.toMatchObject({
+        code: '23505',
+      });
     });
   });
+
+  // ══════════════════════════════════════════════════════════
+  // updateMany
+  // ══════════════════════════════════════════════════════════
 
   describe('updateMany', () => {
-    it('should update multiple users', async () => {
+    it('should delegate to repository and return UpdateResult', async () => {
       const ids = ['1', '2'];
-      const data: UpdateUserDto = { details: { name: 'John' } } as any;
-      const result = { affected: 2 };
+      const dto: UpdateUserDto = { details: { name: 'John' } } as any;
+      const result: UpdateResult = { affected: 2, raw: [], generatedMaps: [] };
 
-      const mockQueryBuilder = {
-        update: jest.fn().mockReturnThis(),
-        set: jest.fn().mockReturnThis(),
-        setParameter: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue(result),
-      };
+      mockUsersRepository.updateMany.mockResolvedValue(result);
 
-      mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      await expect(service.updateMany(ids, dto)).resolves.toEqual(result);
+      expect(mockUsersRepository.updateMany).toHaveBeenCalledWith(ids, dto);
+    });
 
-      expect(await service.updateMany(ids, data)).toEqual(result);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith('id IN (:...ids)', {
-        ids,
+    it('should bubble up repository errors without transforming them', async () => {
+      const ids = ['1', '2'];
+      const dto: UpdateUserDto = { details: { name: 'John' } } as any;
+      const dbError = Object.assign(new Error('db error'), { code: '23505' });
+
+      mockUsersRepository.updateMany.mockRejectedValue(dbError);
+
+      await expect(service.updateMany(ids, dto)).rejects.toMatchObject({
+        code: '23505',
       });
     });
   });
+
+  // ══════════════════════════════════════════════════════════
+  // remove
+  // ══════════════════════════════════════════════════════════
 
   describe('remove', () => {
-    it('should remove a user', async () => {
-      const user = { id: '1', email: 'test@example.com' };
+    it('should delegate to repository and return DeleteResult', async () => {
+      const user: User = { id: '1', email: 'test@example.com' } as any;
+      const result: DeleteResult = { affected: 1, raw: [] };
 
-      mockUserRepository.findOne.mockResolvedValue(user);
-      mockUserRepository.remove.mockResolvedValue(user);
+      mockUsersRepository.findOne.mockResolvedValue(user); // 👈 agregaste esto
+      mockUsersRepository.remove.mockResolvedValue(result);
 
-      expect(await service.remove('1')).toEqual(user);
-      expect(mockUserRepository.remove).toHaveBeenCalledWith(user);
+      await expect(service.remove('1')).resolves.toEqual(result);
+      expect(mockUsersRepository.remove).toHaveBeenCalledWith('1');
     });
 
-    it('should throw NotFoundException when user does not exist', async () => {
-      mockUserRepository.findOne.mockResolvedValue(null);
+    it('should throw NotFoundException when no rows were affected', async () => {
+      const result: DeleteResult = { affected: 0, raw: [] };
 
-      await expect(service.remove('999')).rejects.toThrow(NotFoundException);
+      mockUsersRepository.remove.mockResolvedValue(result);
+
+      await expect(service.remove('1')).rejects.toThrow(NotFoundException);
     });
   });
+
+  // ══════════════════════════════════════════════════════════
+  // removeMany
+  // ══════════════════════════════════════════════════════════
 
   describe('removeMany', () => {
-    it('should remove multiple users', async () => {
-      const bulkRemoveDto: BulkRemoveUsersDto = { ids: ['1', '2'] };
-      const result = { affected: 2 };
+    it('should delegate to repository and return DeleteResult', async () => {
+      const dto: BulkRemoveUsersDto = { ids: ['1', '2'] };
+      const result: DeleteResult = { affected: 2, raw: [] };
 
-      const mockQueryBuilder = {
-        delete: jest.fn().mockReturnThis(),
-        from: jest.fn().mockReturnThis(),
-        where: jest.fn().mockReturnThis(),
-        execute: jest.fn().mockResolvedValue(result),
-      };
+      mockUsersRepository.removeMany.mockResolvedValue(result);
 
-      mockUserRepository.createQueryBuilder.mockReturnValue(mockQueryBuilder);
+      await expect(service.removeMany(dto)).resolves.toEqual(result);
+      expect(mockUsersRepository.removeMany).toHaveBeenCalledWith(dto);
+    });
 
-      expect(await service.removeMany(bulkRemoveDto)).toEqual(result);
-      expect(mockQueryBuilder.where).toHaveBeenCalledWith('id IN (:...ids)', {
-        ids: bulkRemoveDto.ids,
+    it('should bubble up repository errors without transforming them', async () => {
+      const dto: BulkRemoveUsersDto = { ids: ['1', '2'] };
+      const dbError = Object.assign(new Error('db error'), { code: '23503' });
+
+      mockUsersRepository.removeMany.mockRejectedValue(dbError);
+
+      await expect(service.removeMany(dto)).rejects.toMatchObject({
+        code: '23503',
       });
-    });
-  });
-
-  describe('exceptionHandler', () => {
-    it('should throw BadRequestException for duplicate entry', () => {
-      const error = { code: '23505' };
-
-      expect(() => service.exceptionHandler(error)).toThrow(
-        BadRequestException,
-      );
-    });
-
-    it('should throw NotFoundException for user not found', () => {
-      const error = { code: '02000' };
-
-      expect(() => service.exceptionHandler(error)).toThrow(NotFoundException);
-    });
-
-    it('should throw InternalServerErrorException for unknown error', () => {
-      const error = { code: 'UNKNOWN' };
-
-      expect(() => service.exceptionHandler(error)).toThrow(
-        InternalServerErrorException,
-      );
     });
   });
 });

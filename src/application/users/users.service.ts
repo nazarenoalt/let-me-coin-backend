@@ -34,11 +34,15 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto): Promise<void> {
-    return this.usersRepository.update(id, updateUserDto);
+  // For an unkown reason, I can't get details to not be undefined. This is a problem since the dto ever contains the details property
+  async update(id: string, dto: UpdateUserDto) {
+    const result = await this.usersRepository.update(id, dto);
+    if (result.affected === 0)
+      throw new NotFoundException(`User with Id ${id} not found.`);
+    return result;
   }
 
-  async updateMany(ids: string[], data: UpdateUserDto): Promise<void> {
+  async updateMany(ids: string[], data: UpdateUserDto) {
     return this.usersRepository.updateMany(ids, data);
   }
 
@@ -52,7 +56,7 @@ export class UsersService {
     return this.usersRepository.remove(id);
   }
 
-  removeMany(dto: BulkRemoveUsersDto): Promise<void> {
+  removeMany(dto: BulkRemoveUsersDto) {
     return this.usersRepository.removeMany(dto);
   }
 }

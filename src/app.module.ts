@@ -11,6 +11,8 @@ import { TransactionsModule } from '@infrastructure/modules/transactions/transac
 import { DashboardModule } from '@infrastructure/modules/dashboard/dashboard.module';
 import { CommonModule } from '@infrastructure/modules/common/common.module';
 import { AccountsModule } from '@infrastructure/modules/accounts/accounts.module';
+import { APP_FILTER } from '@nestjs/core';
+import { GlobalExceptionFilter } from '@infrastructure/modules/common/filters/global-exception.filter';
 
 @Module({
   imports: [
@@ -37,6 +39,12 @@ import { AccountsModule } from '@infrastructure/modules/accounts/accounts.module
     AccountsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_FILTER,
+      useClass: GlobalExceptionFilter,
+    },
+  ],
 })
 export class AppModule {}
