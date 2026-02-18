@@ -41,11 +41,11 @@ export class UsersController {
   }
 
   @Patch(':id')
-  update(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ) {
-    return this.usersService.update(id, updateUserDto);
+  update(@Param('id', ParseUUIDPipe) id: string, @Body() dto: UpdateUserDto) {
+    // aca ya el dto recibe details: undefined.
+    // UpdateUserDto { details: undefined, firstName: 'laluaso' }
+    console.log(dto);
+    return this.usersService.update(id, dto);
   }
 
   @Delete('bulk')

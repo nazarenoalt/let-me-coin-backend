@@ -4,7 +4,6 @@ import { Repository } from 'typeorm';
 import { User } from '@domain/users/user.entity';
 import { CreateUserDto, UpdateUserDto } from '@domain/users/dto';
 import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
-import { cleanObject } from '@infrastructure/modules/common/helpers/object.helper';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { IUsersRepository } from '@domain/users/interfaces/user.repository.interface';
@@ -48,27 +47,35 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async update(id: string, dto: UpdateUserDto) {
-    return await this.userRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({
+    const { details, ...restDto } = dto;
+    const query = this.userRepository.createQueryBuilder().update(User);
+
+    if (details) {
+      query.set({
+        ...restDto,
         details: () => 'details || :newDetails::jsonb',
-      })
-      .setParameter('newDetails', JSON.stringify(cleanObject(dto.details)))
-      .where('id = :id', { id })
-      .execute();
+      });
+      query.setParameter('newDetails', JSON.stringify(details));
+    } else {
+      query.set(restDto);
+    }
+    return await query.where('id = :id', { id }).execute();
   }
 
   async updateMany(ids: string[], dto: UpdateUserDto) {
-    return await this.userRepository
-      .createQueryBuilder()
-      .update(User)
-      .set({
+    const { details, ...restDto } = dto;
+    const query = this.userRepository.createQueryBuilder().update(User);
+
+    if (details) {
+      query.set({
+        ...restDto,
         details: () => 'details || :newDetails::jsonb',
-      })
-      .setParameter('newDetails', JSON.stringify(cleanObject(dto.details)))
-      .where('id IN (:...ids)', { ids })
-      .execute();
+      });
+      query.setParameter('newDetails', JSON.stringify(details));
+    } else {
+      query.set(restDto);
+    }
+    return await query.where('id IN (:...ids)', { ids }).execute();
   }
 
   async remove(id: string): Promise<DeleteResult> {

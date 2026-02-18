@@ -34,10 +34,11 @@ export class UsersService {
     return user;
   }
 
-  async update(id: string, updateUserDto: UpdateUserDto) {
-    const result = await this.usersRepository.update(id, updateUserDto);
+  // For an unkown reason, I can't get details to not be undefined. This is a problem since the dto ever contains the details property
+  async update(id: string, dto: UpdateUserDto) {
+    const result = await this.usersRepository.update(id, dto);
     if (result.affected === 0)
-      throw new NotFoundException(`ser with Id ${id} not found.`);
+      throw new NotFoundException(`User with Id ${id} not found.`);
     return result;
   }
 

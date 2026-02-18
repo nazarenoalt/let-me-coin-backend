@@ -6,7 +6,7 @@ import { UserDetailsDto } from './user-details.dto';
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
   @ValidateNested()
-  @Type(() => UserDetailsDto)
   @IsOptional()
-  details: UserDetailsDto;
+  @Type(() => UserDetailsDto)
+  details?: UserDetailsDto;
 }
