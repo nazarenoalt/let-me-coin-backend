@@ -5,4 +5,5 @@ dist
 #files
 .env
 
-
+#.md files
+notes.md
