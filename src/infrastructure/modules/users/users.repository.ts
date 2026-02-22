@@ -7,7 +7,7 @@ import { BulkRemoveUsersDto } from '@domain/users/dto/bulk-remove-users.dto';
 import { PaginationDto } from '../common/dto/pagination.dto';
 import { DeleteResult } from 'typeorm/browser';
 import { IUsersRepository } from '@domain/users/interfaces/user.repository.interface';
-import { CURRENCY } from '@domain/constants/currency.const';
+import { CURRENCY } from 'src/shared/domain/constants/currency.const';
 @Injectable()
 export class UsersRepository implements IUsersRepository {
   constructor(
