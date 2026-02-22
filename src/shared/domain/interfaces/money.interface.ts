@@ -1,11 +1,12 @@
+import { currencyType } from '../types/currency.type';
 import { currencyCode } from '../types/currencyCode.type';
 import { Money } from '../value-objects/Money';
 
 export interface IMoney {
   amount: number;
-  currency: currencyCode;
+  currency: currencyType;
 
-  getAmount(): number; // returns a float amount 100.70
+  getAmount(): string; // returns a float amount 100.70
   getAbsoluteAmount(): number; // returns a crude amount 10070
   getCurrency(): currencyCode; // returns currency code
   getSymbol(): string; // returns symbol
