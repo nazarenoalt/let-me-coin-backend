@@ -10,9 +10,10 @@ export class Money implements IMoney {
 
   constructor(amount: string, currency: currencyCode) {
     this.currency = CURRENCY[currency];
-    this.amount = this.formatAmount(amount);
+    this.amount = this.formatToInteger(amount);
   }
 
+  // Data access methods
   getAmount() {
     if (this.currency.exponent === 0) return this.amount.toString();
 
@@ -26,7 +27,43 @@ export class Money implements IMoney {
     return this.amount;
   }
 
-  private formatAmount(value: string): number {
+  getCurrency() {
+    return { code: this.currency.code, symbol: this.currency.symbol };
+  }
+
+  // Operations
+  add(other: Money) {
+    if (!this.assertSameCurrency(other)) {
+      throw new BadRequestException(
+        `To sum two money values the currency must be the same.`,
+      );
+    }
+    const result = this.amount + other.getAbsoluteAmount();
+    return new Money(this.formatToString(result), this.currency.code);
+  }
+
+  subtract(other: Money) {
+    const result = this.amount - other.getAbsoluteAmount();
+    if (result < 0) {
+      throw new BadRequestException(
+        `The result of a subtract cannot be negative`,
+      );
+    }
+    return new Money(this.formatToString(result), this.currency.code);
+  }
+
+  equals(other: Money): boolean {
+    return (
+      this.amount === other.getAbsoluteAmount() &&
+      this.currency.code === other.getCurrency().code
+    );
+  }
+
+  assertSameCurrency(other: Money) {
+    return this.currency.code === other.getCurrency().code;
+  }
+  private formatToInteger(value: string): number {
+    // TODO: manejar edge case monedas sin exponente
     if (!value) {
       throw new BadRequestException('The price must not be empty.');
     }
@@ -39,5 +76,20 @@ export class Money implements IMoney {
     }
 
     return Number.parseInt(value.replaceAll('.', ''));
+  }
+
+  private formatToString(value: number) {
+    const { exponent } = this.currency;
+    let str = value.toString();
+
+    if (exponent === 0) return str;
+
+    //add zeros if the number received has les characters than the minimum needed (1 + exponent, 0.xx)
+    for (let i = 0; i <= exponent - str.length; i++) {
+      str += '0';
+    }
+
+    const index = str.length - exponent;
+    return str.slice(0, index) + '.' + str.slice(index);
   }
 }
