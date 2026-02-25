@@ -5,7 +5,7 @@ import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 import {
   GlobalExceptionFilter,
   PostgresErrorCodes,
-} from '@infrastructure/modules/common/filters/global-exception.filter';
+} from '@infrastructure/common/filters/global-exception.filter';
 
 // ─── Helpers ─────────────────────────────────────────────────────────────────
 

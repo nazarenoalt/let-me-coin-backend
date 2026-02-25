@@ -7,7 +7,7 @@ import {
 } from '@domain/users/interfaces/user.repository.interface';
 import { Inject, Injectable } from '@nestjs/common';
 import { NotFoundException } from '@nestjs/common';
-import { PaginationDto } from '@infrastructure/modules/common/dto/pagination.dto';
+import { PaginationDto } from '@infrastructure/common/dto/pagination.dto';
 import { DeleteResult } from 'typeorm';
 
 @Injectable()
