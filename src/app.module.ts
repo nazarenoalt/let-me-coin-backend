@@ -3,16 +3,16 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
-import { AuthModule } from '@infrastructure/modules/auth/auth.module';
-import { UsersModule } from '@infrastructure/modules/users/users.module';
-import { CategoriesModule } from '@infrastructure/modules/categories/categories.module';
-import { BudgetsModule } from '@infrastructure/modules/budgets/budgets.module';
-import { TransactionsModule } from '@infrastructure/modules/transactions/transactions.module';
-import { DashboardModule } from '@infrastructure/modules/dashboard/dashboard.module';
-import { CommonModule } from '@infrastructure/modules/common/common.module';
-import { AccountsModule } from '@infrastructure/modules/accounts/accounts.module';
+import { AuthModule } from '@infrastructure/auth/auth.module';
+import { UsersModule } from '@infrastructure/users/users.module';
+import { CategoriesModule } from '@infrastructure/categories/categories.module';
+import { BudgetsModule } from '@infrastructure/budgets/budgets.module';
+import { TransactionsModule } from '@infrastructure/transactions/transactions.module';
+import { DashboardModule } from '@infrastructure/dashboard/dashboard.module';
+import { CommonModule } from '@infrastructure/common/common.module';
+import { AccountsModule } from '@infrastructure/accounts/accounts.module';
 import { APP_FILTER } from '@nestjs/core';
-import { GlobalExceptionFilter } from '@infrastructure/modules/common/filters/global-exception.filter';
+import { GlobalExceptionFilter } from '@infrastructure/common/filters/global-exception.filter';
 
 @Module({
   imports: [

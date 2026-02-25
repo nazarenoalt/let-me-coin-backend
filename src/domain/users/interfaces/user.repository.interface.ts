@@ -1,4 +1,4 @@
-import { PaginationDto } from '@infrastructure/modules/common/dto/pagination.dto';
+import { PaginationDto } from '@infrastructure/common/dto/pagination.dto';
 import { CreateUserDto, UpdateUserDto } from '../dto';
 import { BulkRemoveUsersDto } from '../dto/bulk-remove-users.dto';
 import { User } from '../user.entity';
