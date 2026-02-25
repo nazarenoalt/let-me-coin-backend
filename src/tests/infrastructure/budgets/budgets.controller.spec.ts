@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { BudgetsController } from './budgets.controller';
-import { BudgetsService } from 'src/application/budgets/budgets.service';
+import { BudgetsController } from '@infrastructure/budgets/budgets.controller';
+import { BudgetsService } from '@application/budgets/budgets.service';
 
 describe('BudgetsController', () => {
   let controller: BudgetsController;

@@ -16,9 +16,8 @@ const config: Config = {
     '^@application/(.*)$': '<rootDir>/src/application/$1',
     '^@infrastructure/(.*)$': '<rootDir>/src/infrastructure/$1',
     '^@shared/(.*)$': '<rootDir>/src/shared/$1',
+    '^@test/(.*)$': '<rootDir>/src/test/$1',
   },
 };
 
 export default config;
-
-//TODO: Mock UUID instead creating a uuid with the library
