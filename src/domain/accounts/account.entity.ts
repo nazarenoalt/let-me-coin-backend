@@ -1,4 +1,4 @@
-import { type currencyCode } from '@domain/types/currencyCode.type';
+import { type currencyCode } from '@shared/domain/types/currencyCode.type';
 import { User } from '@domain/users/user.entity';
 import {
   Column,

@@ -1,5 +1,5 @@
-import type { currencyCode } from '@domain/types/currencyCode.type';
-import { CURRENCY } from '@domain/constants/currency.const';
+import type { currencyCode } from 'src/shared/domain/types/currencyCode.type';
+import { CURRENCY } from 'src/shared/domain/constants/currency.const';
 import { IsIn, IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateAccountDto {
