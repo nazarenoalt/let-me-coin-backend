@@ -24,8 +24,8 @@ export class Transaction {
   @Column({ type: 'int', name: 'amount' })
   _amount: number;
 
-  @Column({ type: 'varchar', length: 3 })
-  currency: TcurrencyCode;
+  @Column({ type: 'varchar', length: 3, name: 'currency' })
+  _currency: TcurrencyCode;
 
   @ManyToOne(() => Account, (accounts) => accounts.transactions, {
     onDelete: 'CASCADE',
@@ -38,6 +38,10 @@ export class Transaction {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  get currency() {
+    return this._currency;
+  }
 
   get amount(): Money {
     const amount = Money.toStringWithCents(this._amount, this.currency);
