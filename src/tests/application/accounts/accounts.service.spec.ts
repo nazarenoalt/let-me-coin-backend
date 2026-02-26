@@ -21,7 +21,7 @@ describe('AccountsService', () => {
         AccountsService,
         {
           provide: ACCOUNTS_REPOSITORY,
-          useValue: mockAccountsRepository, // 👈 mock plano, sin dependencias
+          useValue: mockAccountsRepository,
         },
       ],
     }).compile();
