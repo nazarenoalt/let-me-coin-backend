@@ -5,9 +5,11 @@ import {
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Transaction } from '@domain/transactions/transaction.entity';
 
 @Entity('accounts')
 export class Account {
@@ -38,8 +40,8 @@ export class Account {
   })
   user: User;
 
-  // TODO @OneToMany(TRANSACTIONS)
-
+  @OneToMany(() => Transaction, (transactions) => transactions.account)
+  transactions: Transaction[];
   @CreateDateColumn()
   createdAt: Date;
 

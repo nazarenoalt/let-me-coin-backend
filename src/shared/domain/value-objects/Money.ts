@@ -10,7 +10,7 @@ export class Money implements IMoney {
 
   constructor(amount: string, currency: currencyCode) {
     this.currency = CURRENCY[currency];
-    this.amount = Money.toInteger(amount, this.currency.exponent);
+    this.amount = Money.toInteger(amount, this.currency.code);
   }
 
   // Data access methods
@@ -42,7 +42,7 @@ export class Money implements IMoney {
     const { amount, currency } = this;
     const result = amount + other.getAbsoluteAmount();
     return new Money(
-      Money.toStringWithCents(result, currency.exponent),
+      Money.toStringWithCents(result, currency.code),
       currency.code,
     );
   }
@@ -63,7 +63,7 @@ export class Money implements IMoney {
       );
     }
     return new Money(
-      Money.toStringWithCents(result, currency.exponent),
+      Money.toStringWithCents(result, currency.code),
       currency.code,
     );
   }
@@ -79,10 +79,12 @@ export class Money implements IMoney {
     return this.currency.code === other.getCurrency().code;
   }
 
-  static toInteger(value: string, exponent: number): number {
+  static toInteger(value: string, currency: string): number {
     if (!value) {
       throw new BadRequestException('The price must not be empty.');
     }
+    const exponent = CURRENCY[currency].exponent;
+
     if (exponent === 0) return Number.parseInt(value);
 
     const regex = new RegExp(`^\\d+\\.\\d{${exponent}}$`);
@@ -95,12 +97,14 @@ export class Money implements IMoney {
     return Number.parseInt(value.replaceAll('.', ''));
   }
 
-  static toStringWithCents(value: number, exponent: number): string {
+  static toStringWithCents(value: number, currency: string): string {
     if (value < 0) {
       throw new BadRequestException(
         `toStringWithCents(): value cannot be negative.`,
       );
     }
+
+    const exponent = CURRENCY[currency].exponent;
     if (exponent === 0) return value.toString();
 
     const str = value.toString().padStart(exponent + 1, '0');

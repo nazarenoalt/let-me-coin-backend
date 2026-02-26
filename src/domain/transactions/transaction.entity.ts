@@ -1,1 +1,52 @@
-export class Transaction {}
+import { Account } from '@domain/accounts/account.entity';
+import { type currencyCode } from '@shared/domain/types/currencyCode.type';
+import { Money } from '@shared/domain/value-objects/Money';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+
+@Entity()
+export class Transaction {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: 100 })
+  title: string;
+
+  @Column({ type: 'varchar', length: 500 })
+  description: string;
+
+  @Column({ type: 'int', name: 'amount' })
+  _amount: number;
+
+  @Column({ type: 'varchar', length: 3 })
+  currency: currencyCode;
+
+  @ManyToOne(() => Account, (accounts) => accounts.transactions, {
+    onDelete: 'CASCADE',
+    orphanedRowAction: 'delete',
+  })
+  account: Account;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  get amount(): Money {
+    const amount = Money.toStringWithCents(this._amount, this.currency);
+    return new Money(amount, this.currency);
+  }
+
+  set amount(money: Money) {
+    if (money.currency.code !== this.currency)
+      throw new Error('Error adding an amount: The currencies must be equal.');
+    this._amount = money.getAbsoluteAmount();
+  }
+}
