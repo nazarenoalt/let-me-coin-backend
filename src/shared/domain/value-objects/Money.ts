@@ -5,7 +5,7 @@ import { BadRequestException } from '@nestjs/common';
 import { currencyType } from '../types/currency.type';
 
 export class Money implements IMoney {
-  amount: number;
+  readonly amount: number;
   readonly currency: currencyType;
 
   constructor(amount: string, currency: currencyCode) {
@@ -34,7 +34,7 @@ export class Money implements IMoney {
 
   // Operations
   add(other: Money) {
-    if (!this.assertSameCurrency(other)) {
+    if (!this.hasSameCurrency(other)) {
       throw new BadRequestException(
         `To sum two money values the currency must be the same.`,
       );
@@ -48,8 +48,15 @@ export class Money implements IMoney {
   }
 
   subtract(other: Money) {
+    if (!this.hasSameCurrency(other)) {
+      throw new BadRequestException(
+        `To subtract two money values the currency must be the same.`,
+      );
+    }
+
     const { amount, currency } = this;
     const result = amount - other.getAbsoluteAmount();
+
     if (result < 0) {
       throw new BadRequestException(
         `The result of a subtract cannot be negative`,
@@ -68,7 +75,7 @@ export class Money implements IMoney {
     );
   }
 
-  assertSameCurrency(other: Money) {
+  hasSameCurrency(other: Money) {
     return this.currency.code === other.getCurrency().code;
   }
 
@@ -76,13 +83,12 @@ export class Money implements IMoney {
     if (!value) {
       throw new BadRequestException('The price must not be empty.');
     }
-
     if (exponent === 0) return Number.parseInt(value);
 
     const regex = new RegExp(`^\\d+\\.\\d{${exponent}}$`);
     if (!regex.test(value)) {
       throw new BadRequestException(
-        `Invalid price format. Expected ${exponent} decimal places. E.g. '100.79'`,
+        `Invalid price format. Expected ${exponent} decimal places and positive value. E.g. '100.79'`,
       );
     }
 
@@ -90,15 +96,14 @@ export class Money implements IMoney {
   }
 
   static toStringWithCents(value: number, exponent: number): string {
-    let str = value.toString();
-
-    if (exponent === 0) return str;
-
-    // add zeros if the number received has les characters than the minimum needed (1 + exponent, 0.xx)
-    for (let i = 0; i <= exponent - str.length; i++) {
-      str += '0';
+    if (value < 0) {
+      throw new BadRequestException(
+        `toStringWithCents(): value cannot be negative.`,
+      );
     }
+    if (exponent === 0) return value.toString();
 
+    const str = value.toString().padStart(exponent + 1, '0');
     const index = str.length - exponent;
     return str.slice(0, index) + '.' + str.slice(index);
   }

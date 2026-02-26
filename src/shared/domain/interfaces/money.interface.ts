@@ -7,5 +7,5 @@ export interface IMoney {
   add(other: Money): Money;
   subtract(other: Money): Money;
   equals(other: Money): boolean;
-  assertSameCurrency(other: Money): void;
+  hasSameCurrency(other: Money): void;
 }
