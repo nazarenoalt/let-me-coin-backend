@@ -5,8 +5,8 @@ import { BadRequestException } from '@nestjs/common';
 import { currencyType } from '../types/currency.type';
 
 export class Money implements IMoney {
-  private amount: number;
-  private readonly currency: currencyType;
+  amount: number;
+  readonly currency: currencyType;
 
   constructor(amount: string, currency: currencyCode) {
     this.currency = CURRENCY[currency];
@@ -78,7 +78,7 @@ export class Money implements IMoney {
     return Number.parseInt(value.replaceAll('.', ''));
   }
 
-  private formatToString(value: number) {
+  private formatToString(value: number): string {
     const { exponent } = this.currency;
     let str = value.toString();
 
