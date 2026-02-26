@@ -10,15 +10,16 @@ export class Money implements IMoney {
 
   constructor(amount: string, currency: currencyCode) {
     this.currency = CURRENCY[currency];
-    this.amount = this.formatToInteger(amount);
+    this.amount = Money.toInteger(amount, this.currency.exponent);
   }
 
   // Data access methods
   getAmount() {
-    if (this.currency.exponent === 0) return this.amount.toString();
+    const { amount, currency } = this;
+    if (currency.exponent === 0) return amount.toString();
 
-    const str = this.amount.toString();
-    const index = str.length - this.currency.exponent;
+    const str = amount.toString();
+    const index = str.length - currency.exponent;
 
     return str.slice(0, index) + '.' + str.slice(index);
   }
@@ -38,18 +39,26 @@ export class Money implements IMoney {
         `To sum two money values the currency must be the same.`,
       );
     }
-    const result = this.amount + other.getAbsoluteAmount();
-    return new Money(this.formatToString(result), this.currency.code);
+    const { amount, currency } = this;
+    const result = amount + other.getAbsoluteAmount();
+    return new Money(
+      Money.toStringWithCents(result, currency.exponent),
+      currency.code,
+    );
   }
 
   subtract(other: Money) {
-    const result = this.amount - other.getAbsoluteAmount();
+    const { amount, currency } = this;
+    const result = amount - other.getAbsoluteAmount();
     if (result < 0) {
       throw new BadRequestException(
         `The result of a subtract cannot be negative`,
       );
     }
-    return new Money(this.formatToString(result), this.currency.code);
+    return new Money(
+      Money.toStringWithCents(result, currency.exponent),
+      currency.code,
+    );
   }
 
   equals(other: Money): boolean {
@@ -62,29 +71,30 @@ export class Money implements IMoney {
   assertSameCurrency(other: Money) {
     return this.currency.code === other.getCurrency().code;
   }
-  private formatToInteger(value: string): number {
-    // TODO: manejar edge case monedas sin exponente
+
+  static toInteger(value: string, exponent: number): number {
     if (!value) {
       throw new BadRequestException('The price must not be empty.');
     }
 
-    const regex = new RegExp(`^\\d+\\.\\d{${this.currency.exponent}}$`);
+    if (exponent === 0) return Number.parseInt(value);
+
+    const regex = new RegExp(`^\\d+\\.\\d{${exponent}}$`);
     if (!regex.test(value)) {
       throw new BadRequestException(
-        `Invalid price format. Expected ${this.currency.exponent} decimal places. E.g. '100.79'`,
+        `Invalid price format. Expected ${exponent} decimal places. E.g. '100.79'`,
       );
     }
 
     return Number.parseInt(value.replaceAll('.', ''));
   }
 
-  private formatToString(value: number): string {
-    const { exponent } = this.currency;
+  static toStringWithCents(value: number, exponent: number): string {
     let str = value.toString();
 
     if (exponent === 0) return str;
 
-    //add zeros if the number received has les characters than the minimum needed (1 + exponent, 0.xx)
+    // add zeros if the number received has les characters than the minimum needed (1 + exponent, 0.xx)
     for (let i = 0; i <= exponent - str.length; i++) {
       str += '0';
     }
