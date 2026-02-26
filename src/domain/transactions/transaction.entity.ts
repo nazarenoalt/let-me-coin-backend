@@ -1,5 +1,5 @@
 import { Account } from '@domain/accounts/account.entity';
-import { type currencyCode } from '@shared/domain/types/currencyCode.type';
+import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { Money } from '@shared/domain/value-objects/Money';
 import {
   Column,
@@ -25,7 +25,7 @@ export class Transaction {
   _amount: number;
 
   @Column({ type: 'varchar', length: 3 })
-  currency: currencyCode;
+  currency: TcurrencyCode;
 
   @ManyToOne(() => Account, (accounts) => accounts.transactions, {
     onDelete: 'CASCADE',

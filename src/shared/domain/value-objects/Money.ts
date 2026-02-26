@@ -1,5 +1,5 @@
 import { CURRENCY } from '@shared/domain/constants/currency.const';
-import { currencyCode } from '@shared/domain/types/currencyCode.type';
+import { TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { IMoney } from '../interfaces/money.interface';
 import { BadRequestException } from '@nestjs/common';
 import { currencyType } from '../types/currency.type';
@@ -8,7 +8,7 @@ export class Money implements IMoney {
   readonly amount: number;
   readonly currency: currencyType;
 
-  constructor(amount: string, currency: currencyCode) {
+  constructor(amount: string, currency: TcurrencyCode) {
     this.currency = CURRENCY[currency];
     this.amount = Money.toInteger(amount, this.currency.code);
   }

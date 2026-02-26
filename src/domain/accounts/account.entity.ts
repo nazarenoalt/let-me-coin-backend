@@ -1,4 +1,4 @@
-import { type currencyCode } from '@shared/domain/types/currencyCode.type';
+import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { User } from '@domain/users/user.entity';
 import {
   Column,
@@ -26,7 +26,7 @@ export class Account {
     type: 'varchar',
     length: 3,
   })
-  currency: currencyCode;
+  currency: TcurrencyCode;
 
   @Column({
     type: 'bool',
