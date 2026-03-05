@@ -1,5 +1,12 @@
-import { currencyCodes } from '@shared/domain/constants/currency.const';
-import { IsIn, IsNotEmpty, IsString, IsUUID, MaxLength } from 'class-validator';
+import { Money } from '@shared/domain/value-objects/Money';
+import { Transform } from 'class-transformer';
+import {
+  IsNotEmpty,
+  IsOptional,
+  IsString,
+  IsUUID,
+  MaxLength,
+} from 'class-validator';
 
 export class CreateTransactionDto {
   @IsString()
@@ -7,17 +14,13 @@ export class CreateTransactionDto {
   title: string;
 
   @IsString()
+  @IsOptional()
   @MaxLength(500)
   description: string;
 
-  @IsString()
   @IsNotEmpty()
-  amount: string;
-
-  @IsString()
-  @IsNotEmpty()
-  @IsIn(currencyCodes)
-  currency: string;
+  @Transform(({ value }) => new Money(value.amount, value.currency))
+  amount: Money;
 
   @IsUUID()
   @IsNotEmpty()

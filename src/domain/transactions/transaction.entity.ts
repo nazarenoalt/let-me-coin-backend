@@ -22,10 +22,10 @@ export class Transaction {
   description: string;
 
   @Column({ type: 'int', name: 'amount' })
-  _amount: number;
+  private _amount: number;
 
   @Column({ type: 'varchar', length: 3, name: 'currency' })
-  _currency: TcurrencyCode;
+  private _currency: TcurrencyCode;
 
   @ManyToOne(() => Account, (accounts) => accounts.transactions, {
     onDelete: 'CASCADE',
@@ -39,18 +39,18 @@ export class Transaction {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  get currency() {
-    return this._currency;
-  }
-
   get amount(): Money {
     const amount = Money.toStringWithCents(this._amount, this.currency);
     return new Money(amount, this.currency);
   }
 
+  get currency(): TcurrencyCode {
+    return this._currency;
+  }
   set amount(money: Money) {
     if (money.currency.code !== this.currency)
       throw new Error('Error adding an amount: The currencies must be equal.');
     this._amount = money.getAbsoluteAmount();
+    this._currency = money.getCurrency().code;
   }
 }

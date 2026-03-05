@@ -62,4 +62,4 @@ export const CURRENCY = {
   SAR: { code: 'SAR', symbol: '﷼', exponent: 2 },
 } as const;
 
-export const currencyCodes = Object.keys(CURRENCY);
+export const CURRENCY_CODES = Object.keys(CURRENCY);
