@@ -17,8 +17,16 @@ export class TransactionsRepository implements ITransactionRepository {
     private readonly accountRepository: Repository<Account>,
   ) {}
 
-  findAll(ids: string[]): Promise<Transaction[]> {
-    return this.transactionRepository.find({ where: { id: In(ids) } });
+  findByAccountId(ids: string[]): Promise<Transaction[]> {
+    return this.transactionRepository.find({
+      where: { account: { id: In(ids) } },
+    });
+  }
+
+  findByUserId(id: string): Promise<Transaction[]> {
+    return this.transactionRepository.find({
+      where: { account: { user: { id } } },
+    });
   }
 
   findone(id: string): Promise<Transaction | null> {
