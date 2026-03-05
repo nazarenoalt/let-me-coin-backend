@@ -5,9 +5,8 @@ import { ITransactionRepository } from '@domain/transactions/interfaces/transact
 import { Transaction } from '@domain/transactions/transaction.entity';
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DeleteResult, In, Repository, UpdateResult } from 'typeorm';
+import { DeleteResult, Repository, UpdateResult } from 'typeorm';
 
-export const TRANSACTIONS_REPOSITORY = 'TransactionsRepository';
 @Injectable()
 export class TransactionsRepository implements ITransactionRepository {
   constructor(
@@ -17,19 +16,19 @@ export class TransactionsRepository implements ITransactionRepository {
     private readonly accountRepository: Repository<Account>,
   ) {}
 
-  findByAccountId(ids: string[]): Promise<Transaction[]> {
+  findByAccountId(accountId: string): Promise<Transaction[]> {
     return this.transactionRepository.find({
-      where: { account: { id: In(ids) } },
+      where: { account: { id: accountId } },
     });
   }
 
-  findByUserId(id: string): Promise<Transaction[]> {
+  findByUserId(userId: string): Promise<Transaction[]> {
     return this.transactionRepository.find({
-      where: { account: { user: { id } } },
+      where: { account: { user: { id: userId } } },
     });
   }
 
-  findone(id: string): Promise<Transaction | null> {
+  findOne(id: string): Promise<Transaction | null> {
     return this.transactionRepository.findOne({ where: { id } });
   }
 
@@ -50,8 +49,8 @@ export class TransactionsRepository implements ITransactionRepository {
     return this.transactionRepository.save(transaction);
   }
 
-  update(ids: string[], dto: UpdateTransactionDto): Promise<UpdateResult> {
-    return this.transactionRepository.update(ids, dto);
+  update(id: string, dto: UpdateTransactionDto): Promise<UpdateResult> {
+    return this.transactionRepository.update(id, dto);
   }
 
   remove(ids: string[]): Promise<DeleteResult> {

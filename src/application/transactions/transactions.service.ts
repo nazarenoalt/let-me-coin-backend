@@ -1,8 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTransactionDto } from '@domain/transactions/dto/create-transaction.dto';
 import { UpdateTransactionDto } from '@domain/transactions/dto/update-transaction.dto';
-import { TRANSACTIONS_REPOSITORY } from '@infrastructure/transactions/transactions.repository';
-import { type ITransactionRepository } from '@domain/transactions/interfaces/transactionsRepository.interface';
+import {
+  TRANSACTIONS_REPOSITORY,
+  type ITransactionRepository,
+} from '@domain/transactions/interfaces/transactionsRepository.interface';
 
 @Injectable()
 export class TransactionsService {
@@ -15,19 +17,27 @@ export class TransactionsService {
     return this.transactionsRepository.create(dto);
   }
 
-  findByAccountId(ids: string[]) {
-    return this.transactionsRepository.findByAccountId(ids);
+  findByAccountId(accountId: string) {
+    return this.transactionsRepository.findByAccountId(accountId);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} transaction`;
+  findByUserId(userId: string) {
+    return this.transactionsRepository.findByUserId(userId);
   }
 
-  update(id: number, dto: UpdateTransactionDto) {
-    return `This action updates a #${id} transaction`;
+  async findOne(id: string) {
+    const transaction = await this.transactionsRepository.findOne(id);
+    if (!transaction)
+      throw new NotFoundException(`The transaction was not found`);
+
+    return transaction;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} transaction`;
+  update(id: string, dto: UpdateTransactionDto) {
+    return this.transactionsRepository.update(id, dto);
+  }
+
+  remove(ids: string[]) {
+    return this.transactionsRepository.remove(ids);
   }
 }
