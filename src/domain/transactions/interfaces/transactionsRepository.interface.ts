@@ -9,8 +9,6 @@ export interface ITransactionRepository {
   findByUserId(ids: string): Promise<Transaction[]>;
   findone(id: string): Promise<Transaction | null>;
   create(dto: CreateTransactionDto): Promise<Transaction>;
-  update(id: string, dto: UpdateTransactionDto): Promise<UpdateResult>;
-  updateMany(ids: string[], dto: UpdateTransactionDto): Promise<UpdateResult>;
-  remove(id): Promise<DeleteResult>;
-  removeMany(ids): Promise<DeleteResult>;
+  update(ids: string[], dto: UpdateTransactionDto): Promise<UpdateResult>;
+  remove(ids: string[]): Promise<DeleteResult>;
 }

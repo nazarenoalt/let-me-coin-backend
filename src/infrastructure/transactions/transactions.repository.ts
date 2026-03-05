@@ -50,17 +50,11 @@ export class TransactionsRepository implements ITransactionRepository {
     return this.transactionRepository.save(transaction);
   }
 
-  update(id: string, dto: UpdateTransactionDto): Promise<UpdateResult> {
-    return this.transactionRepository.update(id, dto);
-  }
-  updateMany(ids: string[], dto: UpdateTransactionDto): Promise<UpdateResult> {
+  update(ids: string[], dto: UpdateTransactionDto): Promise<UpdateResult> {
     return this.transactionRepository.update(ids, dto);
   }
 
-  remove(id: string): Promise<DeleteResult> {
-    return this.transactionRepository.delete(id);
-  }
-  removeMany(ids: string): Promise<DeleteResult> {
+  remove(ids: string[]): Promise<DeleteResult> {
     return this.transactionRepository.delete(ids);
   }
 }
