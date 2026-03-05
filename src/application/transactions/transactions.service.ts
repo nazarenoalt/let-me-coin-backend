@@ -15,8 +15,8 @@ export class TransactionsService {
     return this.transactionsRepository.create(dto);
   }
 
-  findByAccountId() {
-    return this.transactionsRepository.findByAccountId();
+  findByAccountId(ids: string) {
+    return this.transactionsRepository.findByAccountId(ids);
   }
 
   findOne(id: number) {
