@@ -13,7 +13,7 @@ export class TransactionsRepository implements ITransactionRepository {
     @InjectRepository(Transaction)
     private readonly transactionRepository: Repository<Transaction>,
     @InjectRepository(Account)
-    private readonly accountRepository: Repository<Account>,
+    private readonly accountsRepository: Repository<Account>,
   ) {}
 
   findByAccountId(accountId: string): Promise<Transaction[]> {
@@ -34,7 +34,7 @@ export class TransactionsRepository implements ITransactionRepository {
 
   async create(dto: CreateTransactionDto): Promise<Transaction> {
     const { accountId, ...restDto } = dto;
-    const account = await this.accountRepository.findOne({
+    const account = await this.accountsRepository.findOne({
       where: { id: accountId },
     });
 
