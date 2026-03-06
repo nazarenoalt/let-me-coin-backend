@@ -40,8 +40,7 @@ export class Transaction {
   updatedAt: Date;
 
   get amount(): Money {
-    const amount = Money.toStringWithCents(this._amount, this.currency);
-    return new Money(amount, this.currency);
+    return new Money(this._amount, this.currency);
   }
 
   get currency(): TcurrencyCode {
@@ -49,9 +48,12 @@ export class Transaction {
   }
 
   set amount(money: Money) {
-    if (money.currency.code !== this._currency && this._currency !== undefined)
+    if (
+      money.getCurrency().code !== this._currency &&
+      this._currency !== undefined
+    )
       throw new Error('Error adding an amount: The currencies must be equal.');
-    this._amount = money.getAbsoluteAmount();
+    this._amount = money.getAmount();
     this._currency = money.getCurrency().code;
   }
 }

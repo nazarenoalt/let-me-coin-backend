@@ -2,6 +2,7 @@ import { CURRENCY_CODES } from '@shared/domain/constants/currency.const';
 import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import {
   IsIn,
+  IsInt,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -20,8 +21,8 @@ export class CreateTransactionDto {
   description: string;
 
   @IsNotEmpty()
-  @IsString()
-  amount: string;
+  @IsInt()
+  amount: number;
 
   @IsNotEmpty()
   @IsIn(CURRENCY_CODES)
