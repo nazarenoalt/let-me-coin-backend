@@ -3,6 +3,7 @@ import { CreateTransactionDto } from '@domain/transactions/dto/create-transactio
 import { UpdateTransactionDto } from '@domain/transactions/dto/update-transaction.dto';
 import { ITransactionRepository } from '@domain/transactions/interfaces/transactionsRepository.interface';
 import { Transaction } from '@domain/transactions/transaction.entity';
+import { PaginationDto } from '@infrastructure/common/dto/pagination.dto';
 import {
   ConflictException,
   Injectable,
@@ -46,15 +47,27 @@ export class TransactionsRepository implements ITransactionRepository {
     return this.transactionRepository.save(transaction);
   }
 
-  findByAccountId(accountId: string): Promise<Transaction[]> {
+  findByAccountId(
+    accountId: string,
+    paginationDetails: Partial<PaginationDto> = { offset: 0, limit: 20 },
+  ): Promise<Transaction[]> {
     return this.transactionRepository.find({
       where: { account: { id: accountId } },
+      skip: paginationDetails.offset,
+      take: paginationDetails.limit,
     });
   }
 
-  findByUserId(userId: string): Promise<Transaction[]> {
+  findByUserId(
+    userId: string,
+    paginationDetails: Partial<PaginationDto> = { offset: 0, limit: 20 },
+  ): Promise<Transaction[]> {
     return this.transactionRepository.find({
-      where: { account: { user: { id: userId } } },
+      where: {
+        account: { user: { id: userId } },
+      },
+      skip: paginationDetails.offset,
+      take: paginationDetails.limit,
     });
   }
 
