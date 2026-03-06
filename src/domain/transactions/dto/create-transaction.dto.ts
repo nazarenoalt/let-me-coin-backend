@@ -1,6 +1,7 @@
-import { Money } from '@shared/domain/value-objects/Money';
-import { Transform } from 'class-transformer';
+import { CURRENCY_CODES } from '@shared/domain/constants/currency.const';
+import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import {
+  IsIn,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -19,8 +20,12 @@ export class CreateTransactionDto {
   description: string;
 
   @IsNotEmpty()
-  @Transform(({ value }) => new Money(value.amount, value.currency))
-  amount: Money;
+  @IsString()
+  amount: string;
+
+  @IsNotEmpty()
+  @IsIn(CURRENCY_CODES)
+  currency: TcurrencyCode;
 
   @IsUUID()
   @IsNotEmpty()

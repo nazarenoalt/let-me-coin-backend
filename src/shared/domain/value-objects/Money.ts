@@ -10,7 +10,7 @@ export class Money implements IMoney {
 
   constructor(amount: string, currency: TcurrencyCode) {
     this.currency = CURRENCY[currency];
-    this.amount = Money.toInteger(amount, this.currency.code);
+    this.amount = Money.toInteger(amount, currency);
   }
 
   // Data access methods

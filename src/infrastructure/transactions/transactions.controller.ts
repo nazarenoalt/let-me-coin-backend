@@ -18,16 +18,16 @@ export class TransactionsController {
   constructor(private readonly transactionsService: TransactionsService) {}
 
   @Post()
-  create(@Body() createTransactionDto: CreateTransactionDto) {
-    return this.transactionsService.create(createTransactionDto);
+  create(@Body() dto: CreateTransactionDto) {
+    return this.transactionsService.create(dto);
   }
 
-  @Get(':accountId')
+  @Get('byAccount/:accountId')
   findByAccountId(@Param('accountId', ParseUUIDPipe) accountId: string) {
     return this.transactionsService.findByAccountId(accountId);
   }
 
-  @Get(':userId')
+  @Get('byUser/:userId')
   findByUserId(@Param('userId', ParseUUIDPipe) userId: string) {
     return this.transactionsService.findByUserId(userId);
   }
@@ -45,7 +45,7 @@ export class TransactionsController {
     return this.transactionsService.update(id, updateTransactionDto);
   }
 
-  @Delete(':id')
+  @Delete()
   remove(@Body() dto: BulkRemoveTransactionsDto) {
     return this.transactionsService.remove(dto.ids);
   }

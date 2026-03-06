@@ -9,7 +9,7 @@ export interface ITransactionRepository {
   findByAccountId(ids: string): Promise<Transaction[]>;
   findByUserId(ids: string): Promise<Transaction[]>;
   findOne(id: string): Promise<Transaction | null>;
-  update(id: string, dto: UpdateTransactionDto): Promise<UpdateResult>;
+  update(id: string, dto: UpdateTransactionDto): Promise<Transaction>;
   remove(ids: string[]): Promise<DeleteResult>;
 }
 

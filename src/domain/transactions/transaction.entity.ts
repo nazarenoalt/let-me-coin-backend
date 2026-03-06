@@ -47,8 +47,9 @@ export class Transaction {
   get currency(): TcurrencyCode {
     return this._currency;
   }
+
   set amount(money: Money) {
-    if (money.currency.code !== this.currency)
+    if (money.currency.code !== this._currency && this._currency !== undefined)
       throw new Error('Error adding an amount: The currencies must be equal.');
     this._amount = money.getAbsoluteAmount();
     this._currency = money.getCurrency().code;
