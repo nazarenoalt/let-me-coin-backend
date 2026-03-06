@@ -195,13 +195,12 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       } else {
         const response = exceptionResponse as THttpExceptionResponse;
         status = response.statusCode || status;
-        message = Array.isArray(exception.message)
-          ? exception.message.join(',')
-          : exception.message;
+        message = Array.isArray(response.message)
+          ? response.message.join(',\n')
+          : response.message;
         error = response.error || error;
       }
-
-      this.logger.error(`HttpException: ${exception.message}`, exception.stack);
+      this.logger.error(`HttpException: ${message}`, exception.stack);
     } else if (exception instanceof Error) {
       this.logger.error(
         `Uncontrolled error: ${exception.message}`,
