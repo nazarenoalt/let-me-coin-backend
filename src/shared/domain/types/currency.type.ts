@@ -1,4 +1,4 @@
 import { CURRENCY } from '../constants/currency.const';
-import { currencyCode } from './currencyCode.type';
+import { TcurrencyCode } from './currencyCode.type';
 
-export type currencyType = (typeof CURRENCY)[currencyCode];
+export type currencyType = (typeof CURRENCY)[TcurrencyCode];

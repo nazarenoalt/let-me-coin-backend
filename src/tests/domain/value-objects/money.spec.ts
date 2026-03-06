@@ -82,14 +82,14 @@ describe('Money', () => {
     });
   });
 
-  describe('assertSameCurrency()', () => {
+  describe('hasSameCurrency()', () => {
     it('Should return true if the currency is the same', () => {
       const otherMoney = new Money('10.10', 'ARS');
-      expect(money.assertSameCurrency(otherMoney)).toBe(true);
+      expect(money.hasSameCurrency(otherMoney)).toBe(true);
     });
     it('Should return false if the currency is different', () => {
       const otherMoney = new Money('10.10', 'USD');
-      expect(money.assertSameCurrency(otherMoney)).toBe(false);
+      expect(money.hasSameCurrency(otherMoney)).toBe(false);
     });
   });
 });

@@ -1,24 +1,25 @@
 import { CURRENCY } from '@shared/domain/constants/currency.const';
-import { currencyCode } from '@shared/domain/types/currencyCode.type';
+import { TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { IMoney } from '../interfaces/money.interface';
 import { BadRequestException } from '@nestjs/common';
 import { currencyType } from '../types/currency.type';
 
 export class Money implements IMoney {
-  amount: number;
+  readonly amount: number;
   readonly currency: currencyType;
 
-  constructor(amount: string, currency: currencyCode) {
+  constructor(amount: string, currency: TcurrencyCode) {
     this.currency = CURRENCY[currency];
-    this.amount = this.formatToInteger(amount);
+    this.amount = Money.toInteger(amount, currency);
   }
 
   // Data access methods
   getAmount() {
-    if (this.currency.exponent === 0) return this.amount.toString();
+    const { amount, currency } = this;
+    if (currency.exponent === 0) return amount.toString();
 
-    const str = this.amount.toString();
-    const index = str.length - this.currency.exponent;
+    const str = amount.toString();
+    const index = str.length - currency.exponent;
 
     return str.slice(0, index) + '.' + str.slice(index);
   }
@@ -33,23 +34,38 @@ export class Money implements IMoney {
 
   // Operations
   add(other: Money) {
-    if (!this.assertSameCurrency(other)) {
+    if (!this.hasSameCurrency(other)) {
       throw new BadRequestException(
         `To sum two money values the currency must be the same.`,
       );
     }
-    const result = this.amount + other.getAbsoluteAmount();
-    return new Money(this.formatToString(result), this.currency.code);
+    const { amount, currency } = this;
+    const result = amount + other.getAbsoluteAmount();
+    return new Money(
+      Money.toStringWithCents(result, currency.code),
+      currency.code,
+    );
   }
 
   subtract(other: Money) {
-    const result = this.amount - other.getAbsoluteAmount();
+    if (!this.hasSameCurrency(other)) {
+      throw new BadRequestException(
+        `To subtract two money values the currency must be the same.`,
+      );
+    }
+
+    const { amount, currency } = this;
+    const result = amount - other.getAbsoluteAmount();
+
     if (result < 0) {
       throw new BadRequestException(
         `The result of a subtract cannot be negative`,
       );
     }
-    return new Money(this.formatToString(result), this.currency.code);
+    return new Money(
+      Money.toStringWithCents(result, currency.code),
+      currency.code,
+    );
   }
 
   equals(other: Money): boolean {
@@ -59,36 +75,39 @@ export class Money implements IMoney {
     );
   }
 
-  assertSameCurrency(other: Money) {
+  hasSameCurrency(other: Money) {
     return this.currency.code === other.getCurrency().code;
   }
-  private formatToInteger(value: string): number {
-    // TODO: manejar edge case monedas sin exponente
+
+  static toInteger(value: string, currency: string): number {
     if (!value) {
       throw new BadRequestException('The price must not be empty.');
     }
+    const exponent = CURRENCY[currency].exponent;
 
-    const regex = new RegExp(`^\\d+\\.\\d{${this.currency.exponent}}$`);
+    if (exponent === 0) return Number.parseInt(value);
+
+    const regex = new RegExp(`^\\d+\\.\\d{${exponent}}$`);
     if (!regex.test(value)) {
       throw new BadRequestException(
-        `Invalid price format. Expected ${this.currency.exponent} decimal places. E.g. '100.79'`,
+        `Invalid price format. Expected ${exponent} decimal places and positive value. E.g. '100.79'`,
       );
     }
 
     return Number.parseInt(value.replaceAll('.', ''));
   }
 
-  private formatToString(value: number): string {
-    const { exponent } = this.currency;
-    let str = value.toString();
-
-    if (exponent === 0) return str;
-
-    //add zeros if the number received has les characters than the minimum needed (1 + exponent, 0.xx)
-    for (let i = 0; i <= exponent - str.length; i++) {
-      str += '0';
+  static toStringWithCents(value: number, currency: string): string {
+    if (value < 0) {
+      throw new BadRequestException(
+        `toStringWithCents(): value cannot be negative.`,
+      );
     }
 
+    const exponent = CURRENCY[currency].exponent;
+    if (exponent === 0) return value.toString();
+
+    const str = value.toString().padStart(exponent + 1, '0');
     const index = str.length - exponent;
     return str.slice(0, index) + '.' + str.slice(index);
   }

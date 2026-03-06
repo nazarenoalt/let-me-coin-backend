@@ -1,13 +1,15 @@
-import { type currencyCode } from '@shared/domain/types/currencyCode.type';
+import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { User } from '@domain/users/user.entity';
 import {
   Column,
   CreateDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Transaction } from '@domain/transactions/transaction.entity';
 
 @Entity('accounts')
 export class Account {
@@ -24,7 +26,7 @@ export class Account {
     type: 'varchar',
     length: 3,
   })
-  currency: currencyCode;
+  currency: TcurrencyCode;
 
   @Column({
     type: 'bool',
@@ -38,8 +40,8 @@ export class Account {
   })
   user: User;
 
-  // TODO @OneToMany(TRANSACTIONS)
-
+  @OneToMany(() => Transaction, (transactions) => transactions.account)
+  transactions: Transaction[];
   @CreateDateColumn()
   createdAt: Date;
 

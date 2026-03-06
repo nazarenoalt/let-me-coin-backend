@@ -61,3 +61,5 @@ export const CURRENCY = {
   ILS: { code: 'ILS', symbol: '₪', exponent: 2 },
   SAR: { code: 'SAR', symbol: '﷼', exponent: 2 },
 } as const;
+
+export const CURRENCY_CODES = Object.keys(CURRENCY);
