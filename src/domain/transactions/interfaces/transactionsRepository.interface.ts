@@ -8,11 +8,11 @@ export interface ITransactionRepository {
   create(dto: CreateTransactionDto): Promise<Transaction>;
   findByAccountId(
     ids: string,
-    paginationDetails: Partial<PaginationDto>,
+    paginationDetails?: Partial<PaginationDto>,
   ): Promise<Transaction[]>;
   findByUserId(
     ids: string,
-    paginationDetails: Partial<PaginationDto>,
+    paginationDetails?: Partial<PaginationDto>,
   ): Promise<Transaction[]>;
   findOne(id: string): Promise<Transaction | null>;
   update(id: string, dto: UpdateTransactionDto): Promise<Transaction>;
