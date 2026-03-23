@@ -3,14 +3,17 @@ import { Category } from '../category.entity';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { PaginationDto } from '@infrastructure/common/dto/pagination.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
+import { UpdateResult } from 'typeorm/browser';
 
-export interface ICategoryRepository {
+export interface ICategoriesRepository {
   create(dto: CreateCategoryDto): Promise<Category>;
-  findByUser(
+  findByUserId(
     id: string,
     paginationDetails?: PaginationDto,
   ): Promise<Category[]>;
-  findOne(id: string): Promise<Category>;
-  update(ids: string[], dto: UpdateCategoryDto): Promise<Category>;
-  remove(ids: string): Promise<DeleteResult>;
+  findOne(id: string): Promise<Category | null>;
+  update(id: string, dto: UpdateCategoryDto): Promise<UpdateResult>;
+  remove(is: string): Promise<DeleteResult>;
 }
+
+export const CATEGORIES_REPOSITORY = 'CategoriesRepository';

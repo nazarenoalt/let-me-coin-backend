@@ -1,5 +1,6 @@
 import { Transaction } from '@domain/transactions/transaction.entity';
 import { User } from '@domain/users/user.entity';
+import { CURRENCY_CODES } from '@shared/domain/constants/currency.const';
 import type { TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import {
   Column,
@@ -32,7 +33,7 @@ export class Category {
   @OneToMany(() => Transaction, (transactions) => transactions.category)
   transactions: Transaction[];
 
-  @Column({ type: 'varchar', length: 3 })
+  @Column({ type: 'varchar', length: 3, enum: CURRENCY_CODES })
   currency: TcurrencyCode;
 
   @CreateDateColumn()
