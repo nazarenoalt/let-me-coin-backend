@@ -1,7 +1,14 @@
 import { Transaction } from '@domain/transactions/transaction.entity';
 import { User } from '@domain/users/user.entity';
 import type { TcurrencyCode } from '@shared/domain/types/currencyCode.type';
-import { Column, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn,
+} from 'typeorm';
 
 export class Category {
   @PrimaryGeneratedColumn('uuid')
@@ -27,4 +34,10 @@ export class Category {
 
   @Column({ type: 'varchar', length: 3 })
   currency: TcurrencyCode;
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updateAt: Date;
 }
