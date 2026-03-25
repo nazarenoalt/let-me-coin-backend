@@ -11,9 +11,10 @@ import { USERS_REPOSITORY } from '@domain/users/interfaces/user.repository.inter
 import { UsersRepository } from '@infrastructure/users/users.repository';
 import { ACCOUNTS_REPOSITORY } from '@domain/accounts/interfaces/accounts.repository.interface';
 import { AccountsRepository } from '@infrastructure/accounts/accounts.repository';
+import { Transaction } from '@domain/transactions/transaction.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category, User, Account])],
+  imports: [TypeOrmModule.forFeature([Category, User, Account, Transaction])],
   controllers: [CategoriesController],
   providers: [
     CategoriesService,

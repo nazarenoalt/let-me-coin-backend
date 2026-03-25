@@ -5,12 +5,14 @@ import type { TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import {
   Column,
   CreateDateColumn,
+  Entity,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
+@Entity()
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;

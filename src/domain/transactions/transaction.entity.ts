@@ -1,5 +1,6 @@
 import { Account } from '@domain/accounts/account.entity';
 import { Category } from '@domain/categories/category.entity';
+import { User } from '@domain/users/user.entity';
 import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { Money } from '@shared/domain/value-objects/Money';
 import {
@@ -33,6 +34,9 @@ export class Transaction {
     orphanedRowAction: 'delete',
   })
   account: Account;
+
+  @ManyToOne(() => User, (user) => user.transactions)
+  user: User;
 
   @ManyToOne(() => Category, (category) => category.transactions)
   category: Category;
