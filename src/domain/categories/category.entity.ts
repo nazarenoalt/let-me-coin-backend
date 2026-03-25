@@ -1,6 +1,8 @@
 import { Transaction } from '@domain/transactions/transaction.entity';
 import { User } from '@domain/users/user.entity';
+import { COLORS } from '@shared/domain/constants/colors.const';
 import { CURRENCY_CODES } from '@shared/domain/constants/currency.const';
+import { EMOJIS } from '@shared/domain/constants/emojis.const';
 import type { TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import {
   Column,
@@ -20,11 +22,11 @@ export class Category {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ type: 'varchar', length: 50 })
-  color: string;
+  @Column({ type: 'enum', enum: COLORS })
+  color: COLORS;
 
-  @Column({ type: 'varchar', length: 50 })
-  emoji: string;
+  @Column({ type: 'enum', enum: EMOJIS })
+  emoji: EMOJIS;
 
   @ManyToOne(() => User, (user) => user.categories, {
     onDelete: 'CASCADE',
