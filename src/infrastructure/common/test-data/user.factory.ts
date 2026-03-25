@@ -12,6 +12,7 @@ export const createMockUser = (overrides?: Partial<User>): User => ({
   },
   preferences: {},
   accounts: [],
+  categories: [],
   createdAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
   updatedAt: new Date(),
   configureUserDetails: () => {},
