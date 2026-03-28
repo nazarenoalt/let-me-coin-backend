@@ -25,6 +25,9 @@ export class TransactionsService {
     return this.transactionsRepository.findByUserId(userId);
   }
 
+  findByCategoryId(categoryId: string) {
+    return this.transactionsRepository.findByCategoryId(categoryId);
+  }
   async findOne(id: string) {
     const transaction = await this.transactionsRepository.findOne(id);
     if (!transaction)

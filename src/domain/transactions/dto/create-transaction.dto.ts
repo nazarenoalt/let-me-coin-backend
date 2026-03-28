@@ -31,4 +31,11 @@ export class CreateTransactionDto {
   @IsUUID()
   @IsNotEmpty()
   accountId: string;
+
+  @IsUUID()
+  @IsNotEmpty()
+  userId: string;
+
+  @IsUUID()
+  categoryId: string;
 }

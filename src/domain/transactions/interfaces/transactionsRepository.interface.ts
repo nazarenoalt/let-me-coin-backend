@@ -7,11 +7,15 @@ import { PaginationDto } from '@infrastructure/common/dto/pagination.dto';
 export interface ITransactionRepository {
   create(dto: CreateTransactionDto): Promise<Transaction>;
   findByAccountId(
-    ids: string,
+    id: string,
     paginationDetails?: Partial<PaginationDto>,
   ): Promise<Transaction[]>;
   findByUserId(
-    ids: string,
+    id: string,
+    paginationDetails?: Partial<PaginationDto>,
+  ): Promise<Transaction[]>;
+  findByCategoryId(
+    id: string,
     paginationDetails?: Partial<PaginationDto>,
   ): Promise<Transaction[]>;
   findOne(id: string): Promise<Transaction | null>;

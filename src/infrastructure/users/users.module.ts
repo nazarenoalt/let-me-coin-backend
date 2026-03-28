@@ -6,9 +6,11 @@ import { User } from '@domain/users/user.entity';
 import { USERS_REPOSITORY } from '@domain/users/interfaces/user.repository.interface';
 import { UsersRepository } from './users.repository';
 import { Account } from '@domain/accounts/account.entity';
+import { Category } from '@domain/categories/category.entity';
+import { Transaction } from '@domain/transactions/transaction.entity';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User, Account])],
+  imports: [TypeOrmModule.forFeature([User, Account, Transaction, Category])],
   controllers: [UsersController],
   providers: [
     UsersService,

@@ -1,4 +1,6 @@
 import { Account } from '@domain/accounts/account.entity';
+import { Category } from '@domain/categories/category.entity';
+import { Transaction } from '@domain/transactions/transaction.entity';
 import {
   BeforeInsert,
   Column,
@@ -34,6 +36,12 @@ export class User {
 
   @OneToMany(() => Account, (accounts) => accounts.user)
   accounts: Account[];
+
+  @OneToMany(() => Category, (categories) => categories.user)
+  categories: Category[];
+
+  @OneToMany(() => Transaction, (transactions) => transactions.user)
+  transactions: Transaction[];
 
   @CreateDateColumn()
   createdAt: Date;

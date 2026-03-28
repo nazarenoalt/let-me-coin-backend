@@ -42,6 +42,7 @@ export class Account {
 
   @OneToMany(() => Transaction, (transactions) => transactions.account)
   transactions: Transaction[];
+
   @CreateDateColumn()
   createdAt: Date;
 

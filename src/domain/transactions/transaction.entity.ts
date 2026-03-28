@@ -1,4 +1,6 @@
 import { Account } from '@domain/accounts/account.entity';
+import { Category } from '@domain/categories/category.entity';
+import { User } from '@domain/users/user.entity';
 import { type TcurrencyCode } from '@shared/domain/types/currencyCode.type';
 import { Money } from '@shared/domain/value-objects/Money';
 import {
@@ -27,11 +29,17 @@ export class Transaction {
   @Column({ type: 'varchar', length: 3, name: 'currency' })
   private _currency: TcurrencyCode;
 
-  @ManyToOne(() => Account, (accounts) => accounts.transactions, {
+  @ManyToOne(() => Account, (account) => account.transactions, {
     onDelete: 'CASCADE',
     orphanedRowAction: 'delete',
   })
   account: Account;
+
+  @ManyToOne(() => User, (user) => user.transactions)
+  user: User;
+
+  @ManyToOne(() => Category, (category) => category.transactions)
+  category: Category;
 
   @CreateDateColumn()
   createdAt: Date;
