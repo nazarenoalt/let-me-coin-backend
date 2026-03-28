@@ -11,10 +11,12 @@ import {
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
+  Unique,
   UpdateDateColumn,
 } from 'typeorm';
 
 @Entity()
+@Unique(['title', 'user'])
 export class Category {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -22,11 +24,14 @@ export class Category {
   @Column({ type: 'varchar', length: 100 })
   title: string;
 
-  @Column({ type: 'enum', enum: COLORS })
+  @Column({ type: 'enum', enum: COLORS, default: COLORS.YELLOW })
   color: COLORS;
 
-  @Column({ type: 'enum', enum: EMOJIS })
+  @Column({ type: 'enum', enum: EMOJIS, default: EMOJIS.GROCERIES })
   emoji: EMOJIS;
+
+  @Column({ type: 'bool', default: true })
+  isActive: boolean;
 
   @ManyToOne(() => User, (user) => user.categories, {
     onDelete: 'CASCADE',

@@ -32,6 +32,11 @@ export class TransactionsController {
     return this.transactionsService.findByUserId(userId);
   }
 
+  @Get('byCategory/:categoryId')
+  findByCategoryId(@Param('categoryId', ParseUUIDPipe) categoryId: string) {
+    return this.transactionsService.findByCategoryId(categoryId);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.transactionsService.findOne(id);

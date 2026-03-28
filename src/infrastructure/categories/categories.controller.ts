@@ -21,7 +21,7 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto);
   }
 
-  @Get('user/:id')
+  @Get('byUser/:id')
   findByUserId(@Param('id', ParseUUIDPipe) id: string) {
     return this.categoriesService.findByUserId(id);
   }
